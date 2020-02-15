@@ -24,7 +24,7 @@ namespace SmartPlaylist.Services.SmartPlaylist
 
         private static bool ValidateMaxItemsLimit(SmartPlaylistDto smartPlaylist)
         {
-            return (smartPlaylist.Limit.HasLimit && smartPlaylist.Limit.MaxItems >= 1) || !smartPlaylist.Limit.HasLimit;
+            return smartPlaylist.Limit.HasLimit && smartPlaylist.Limit.MaxItems >= 1 || !smartPlaylist.Limit.HasLimit;
         }
 
         private static bool ValidateCriteriaValue(SmartPlaylistDto smartPlaylist)

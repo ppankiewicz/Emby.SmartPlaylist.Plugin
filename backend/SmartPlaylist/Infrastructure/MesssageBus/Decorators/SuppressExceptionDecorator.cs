@@ -8,7 +8,7 @@ namespace SmartPlaylist.Infrastructure.MesssageBus.Decorators
         private readonly IMessageHandler<T> _decorated;
         private readonly ILogger _logger;
 
-        public SuppressExceptionDecorator(IMessageHandler<T> decorated,ILogger logger)
+        public SuppressExceptionDecorator(IMessageHandler<T> decorated, ILogger logger)
         {
             _decorated = decorated;
             _logger = logger;

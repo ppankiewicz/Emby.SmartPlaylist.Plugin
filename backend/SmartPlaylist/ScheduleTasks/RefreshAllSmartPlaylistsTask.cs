@@ -9,6 +9,12 @@ namespace SmartPlaylist.ScheduleTasks
 {
     public class RefreshAllSmartPlaylistsTask : IScheduledTask, IConfigurableScheduledTask
     {
+        public bool IsHidden => false;
+
+        public bool IsEnabled => true;
+
+        public bool IsLogged => true;
+
         public IEnumerable<TaskTriggerInfo> GetDefaultTriggers()
         {
             return Const.RefreshAllSmartPlaylistsTaskTriggers;
@@ -28,12 +34,5 @@ namespace SmartPlaylist.ScheduleTasks
         public string Description => "Refresh all SmartPlaylists";
 
         public string Category => "Library";
-
-        public bool IsHidden => false;
-
-        public bool IsEnabled => true;
-
-        public bool IsLogged => true;
     }
-
 }

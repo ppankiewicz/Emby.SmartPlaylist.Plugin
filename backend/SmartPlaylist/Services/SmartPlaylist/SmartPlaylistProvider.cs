@@ -17,13 +17,14 @@ namespace SmartPlaylist.Services.SmartPlaylist
         public async Task<Domain.SmartPlaylist[]> GetAllUpdateableSmartPlaylistsAsync()
         {
             var smartPlaylistDtos = await _smartPlaylistStore.GetAllSmartPlaylistsAsync().ConfigureAwait(false);
-            return SmartPlaylistAdapter.Adapt(smartPlaylistDtos).Where(x=>x.CanUpdatePlaylist).ToArray();
+            return SmartPlaylistAdapter.Adapt(smartPlaylistDtos).Where(x => x.CanUpdatePlaylist).ToArray();
         }
 
 
         public async Task<Domain.SmartPlaylist> GetSmartPlaylistAsync(Guid smartPlaylistId)
         {
-            var smartPlaylistDto = await _smartPlaylistStore.GetSmartPlaylistAsync(smartPlaylistId).ConfigureAwait(false);
+            var smartPlaylistDto =
+                await _smartPlaylistStore.GetSmartPlaylistAsync(smartPlaylistId).ConfigureAwait(false);
             return SmartPlaylistAdapter.Adapt(smartPlaylistDto);
         }
     }

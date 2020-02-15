@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using SmartPlaylist.Domain.Values;
+﻿using SmartPlaylist.Domain.Values;
 
 namespace SmartPlaylist.Domain.Rule
 {

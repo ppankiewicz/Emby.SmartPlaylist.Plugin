@@ -1,14 +1,7 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Json;
-using System.Xml.Serialization;
-using MediaBrowser.Controller.Entities;
 using MediaBrowser.Model.Plugins;
 using SmartPlaylist.Contracts;
 using SmartPlaylist.Domain.CriteriaDefinition;
-using SmartPlaylist.Domain.Operator;
-using SmartPlaylist.Domain.Values;
 
 namespace SmartPlaylist.Configuration
 {
@@ -20,8 +13,4 @@ namespace SmartPlaylist.Configuration
 
         public CriteriaDefinition[] RulesCriteriaDefinitions => DefinedCriteriaDefinitions.All;
     }
-
-
-
-
 }

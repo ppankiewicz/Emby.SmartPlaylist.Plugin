@@ -2,21 +2,22 @@
 {
     public class NumberRangeValue : Value
     {
-        public static NumberRangeValue Default = new NumberRangeValue(0,0);
+        public static NumberRangeValue Default = new NumberRangeValue(0, 0);
 
-        public static NumberRangeValue Create(int @from, int to)
+        public NumberRangeValue(int from, int to)
         {
-            return new NumberRangeValue(@from ,to);
-        }
-        public NumberRangeValue(int @from, int to)
-        {
-            From = @from;
+            From = from;
             To = to;
         }
 
         public override string Kind => "numberRange";
         public int From { get; }
         public int To { get; }
+
+        public static NumberRangeValue Create(int from, int to)
+        {
+            return new NumberRangeValue(from, to);
+        }
 
         protected bool Equals(NumberRangeValue other)
         {
@@ -27,7 +28,7 @@
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
+            if (obj.GetType() != GetType()) return false;
             return Equals((NumberRangeValue) obj);
         }
 

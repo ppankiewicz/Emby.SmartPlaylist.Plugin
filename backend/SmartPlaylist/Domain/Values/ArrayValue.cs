@@ -17,5 +17,4 @@
             return new ArrayValue<TValue>(values);
         }
     }
-
 }

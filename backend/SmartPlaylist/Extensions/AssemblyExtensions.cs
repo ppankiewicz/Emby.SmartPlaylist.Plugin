@@ -12,7 +12,7 @@ namespace SmartPlaylist.Extensions
             var baseType = typeof(TBase);
             return assembly.GetTypes()
                 .Where(t => t != baseType && !t.IsAbstract && baseType.IsAssignableFrom(t))
-                .OrderBy(x=>x.Name);
+                .OrderBy(x => x.Name);
         }
 
         public static IEnumerable<TBase> FindAndCreateDerivedTypes<TBase>(this Assembly assembly)

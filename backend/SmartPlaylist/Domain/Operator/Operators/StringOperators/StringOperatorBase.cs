@@ -15,7 +15,9 @@ namespace SmartPlaylist.Domain.Operator.Operators.StringOperators
             var strItemValue = itemValue as StringValue;
             var arrayStrItemValue = itemValue as ArrayValue<StringValue>;
 
-            return strItemValue != null ? CompareStrings(strItemValue, strValue) : CompareArrayToString(arrayStrItemValue, strValue);
+            return strItemValue != null
+                ? CompareStrings(strItemValue, strValue)
+                : CompareArrayToString(arrayStrItemValue, strValue);
         }
 
         public override bool CanCompare(Value itemValue, Value value)

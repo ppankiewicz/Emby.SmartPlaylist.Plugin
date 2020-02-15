@@ -38,7 +38,8 @@ namespace SmartPlaylist
             {
                 return new[]
                 {
-                    new TaskTriggerInfo {Type = TaskTriggerInfo.TriggerDaily, TimeOfDayTicks = TimeSpan.FromHours(1).Ticks}
+                    new TaskTriggerInfo
+                        {Type = TaskTriggerInfo.TriggerDaily, TimeOfDayTicks = TimeSpan.FromHours(1).Ticks}
                 };
             }
         }

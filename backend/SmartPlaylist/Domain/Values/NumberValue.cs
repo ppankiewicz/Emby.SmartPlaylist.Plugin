@@ -4,11 +4,6 @@
     {
         public static NumberValue Default = new NumberValue(0);
 
-        public static NumberValue Create(int value)
-        {
-            return new NumberValue(value);
-        }
-
         public NumberValue(int value)
         {
             Value = value;
@@ -17,6 +12,11 @@
         public override string Kind => "number";
 
         public int Value { get; }
+
+        public static NumberValue Create(int value)
+        {
+            return new NumberValue(value);
+        }
 
         protected bool Equals(NumberValue other)
         {
@@ -27,7 +27,7 @@
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
+            if (obj.GetType() != GetType()) return false;
             return Equals((NumberValue) obj);
         }
 

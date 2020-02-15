@@ -7,6 +7,7 @@ namespace SmartPlaylist.Domain.Operator.Operators.StringOperators
     {
         public override string Name => "contains";
         public override Value DefaultValue => StringValue.Default;
+
         public override bool CompareStrings(StringValue itemValue, StringValue value)
         {
             return itemValue.Contains(value);

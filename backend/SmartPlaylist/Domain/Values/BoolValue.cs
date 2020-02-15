@@ -2,20 +2,21 @@
 {
     public class BoolValue : Value
     {
-        public override string Kind => "bool";
         public static BoolValue Default = new BoolValue(false);
+
+
+        public BoolValue(bool value)
+        {
+            Value = value;
+        }
+
+        public override string Kind => "bool";
 
         public bool Value { get; }
 
         public static Value Create(bool value)
         {
             return new BoolValue(value);
-        }
-
-
-        public BoolValue(bool value)
-        {
-            Value = value;
         }
 
         protected bool Equals(BoolValue other)
@@ -27,7 +28,7 @@
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
+            if (obj.GetType() != GetType()) return false;
             return Equals((BoolValue) obj);
         }
 

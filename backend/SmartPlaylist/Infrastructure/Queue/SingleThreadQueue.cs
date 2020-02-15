@@ -17,6 +17,12 @@ namespace SmartPlaylist.Infrastructure.Queue
             thread.Start();
         }
 
+        public void Dispose()
+        {
+            _items.CompleteAdding();
+            _items?.Dispose();
+        }
+
         public void Enqueue(T item)
         {
             if (!_items.IsAddingCompleted)
@@ -27,12 +33,6 @@ namespace SmartPlaylist.Infrastructure.Queue
         {
             foreach (var item in _items.GetConsumingEnumerable(CancellationToken.None))
                 _onConsumeItem(item);
-        }
-
-        public void Dispose()
-        {
-            _items.CompleteAdding();
-            _items?.Dispose();
         }
     }
 }

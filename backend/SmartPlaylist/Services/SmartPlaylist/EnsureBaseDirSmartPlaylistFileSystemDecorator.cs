@@ -53,6 +53,5 @@ namespace SmartPlaylist.Services.SmartPlaylist
         {
             if (!Directory.Exists(BasePath)) Directory.CreateDirectory(BasePath);
         }
-
     }
 }

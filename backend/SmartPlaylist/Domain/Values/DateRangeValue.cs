@@ -4,23 +4,24 @@ namespace SmartPlaylist.Domain.Values
 {
     public class DateRangeValue : Value
     {
-        public static DateRangeValue Default = new DateRangeValue(DateTimeOffset.UtcNow, DateTimeOffset.UtcNow.AddMonths(1));
+        public static DateRangeValue Default =
+            new DateRangeValue(DateTimeOffset.UtcNow, DateTimeOffset.UtcNow.AddMonths(1));
 
-        public static DateRangeValue Create(DateTimeOffset @from, DateTimeOffset to)
+        public DateRangeValue(DateTimeOffset from, DateTimeOffset to)
         {
-            return new DateRangeValue(@from, to);
-        }
-
-        public DateRangeValue(DateTimeOffset @from, DateTimeOffset to)
-        {
-            From = @from;
+            From = from;
             To = to;
         }
 
         public override string Kind => "dateRange";
 
-        public DateTimeOffset From { get; } 
+        public DateTimeOffset From { get; }
         public DateTimeOffset To { get; }
+
+        public static DateRangeValue Create(DateTimeOffset from, DateTimeOffset to)
+        {
+            return new DateRangeValue(from, to);
+        }
 
         protected bool Equals(DateRangeValue other)
         {
@@ -31,7 +32,7 @@ namespace SmartPlaylist.Domain.Values
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
+            if (obj.GetType() != GetType()) return false;
             return Equals((DateRangeValue) obj);
         }
 

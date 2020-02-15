@@ -8,14 +8,14 @@ namespace SmartPlaylist.Domain
 {
     public class UserPlaylist
     {
-        public Playlist Playlist { get; }
-        public User User { get;  }
-
         public UserPlaylist(User user, Playlist playlist)
         {
             User = user;
             Playlist = playlist;
         }
+
+        public Playlist Playlist { get; }
+        public User User { get; }
 
         public BaseItem[] GetItems()
         {
@@ -25,18 +25,15 @@ namespace SmartPlaylist.Domain
 
     public class UserPlaylists
     {
-        public User User { get; }
-        public Playlist[] Playlists { get; }
-
         public UserPlaylists(User user, params Playlist[] playlists)
         {
-            if (!playlists.Any())
-            {
-                throw new Exception($"{nameof(playlists)} cannot be empty");
-            }
+            if (!playlists.Any()) throw new Exception($"{nameof(playlists)} cannot be empty");
             User = user;
             Playlists = playlists;
         }
+
+        public User User { get; }
+        public Playlist[] Playlists { get; }
     }
 
 

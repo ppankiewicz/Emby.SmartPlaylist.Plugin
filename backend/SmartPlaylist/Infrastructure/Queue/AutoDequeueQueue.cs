@@ -9,9 +9,9 @@ namespace SmartPlaylist.Infrastructure.Queue
     public class AutoDequeueQueue<T> : IDisposable
     {
         private readonly AutoDequeueQueueConfig _config;
-        private readonly Action<IEnumerable<T>> _onDequeue;
         private readonly List<T> _items = new List<T>();
         private readonly object _lock = new object();
+        private readonly Action<IEnumerable<T>> _onDequeue;
         private readonly TimeSpan _period = TimeSpan.FromHours(1);
         private Timer _absoluteTimer;
         private Timer _timer;

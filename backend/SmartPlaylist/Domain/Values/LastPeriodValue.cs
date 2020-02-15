@@ -7,15 +7,20 @@ namespace SmartPlaylist.Domain.Values
     {
         public static LastPeriodValue Default = new LastPeriodValue(1, PeriodType.Weeks);
 
-        public static LastPeriodValue Create(int value, PeriodType periodType)
-        {
-            return new LastPeriodValue(value, periodType);
-        }
-
         public LastPeriodValue(int value, PeriodType periodType)
         {
             Value = value;
             PeriodType = periodType;
+        }
+
+        public override string Kind => "lastPeriod";
+
+        public int Value { get; }
+        public PeriodType PeriodType { get; }
+
+        public static LastPeriodValue Create(int value, PeriodType periodType)
+        {
+            return new LastPeriodValue(value, periodType);
         }
 
         public DateRangeValue ToDateRange(DateTimeOffset now)
@@ -24,23 +29,18 @@ namespace SmartPlaylist.Domain.Values
             switch (PeriodType)
             {
                 case PeriodType.Days:
-                    fromDate =  now.AddDays(-1*Value);
+                    fromDate = now.AddDays(-1 * Value);
                     break;
                 case PeriodType.Weeks:
-                    fromDate =  now.AddDays(-1 * 7 * Value);
+                    fromDate = now.AddDays(-1 * 7 * Value);
                     break;
                 case PeriodType.Months:
-                    fromDate = now.AddMonths(-1*Value);
+                    fromDate = now.AddMonths(-1 * Value);
                     break;
             }
 
             return DateRangeValue.Create(fromDate, now);
         }
-
-        public override string Kind => "lastPeriod";
-
-        public int Value { get;  }
-        public PeriodType PeriodType { get;}
 
         protected bool Equals(LastPeriodValue other)
         {
@@ -51,7 +51,7 @@ namespace SmartPlaylist.Domain.Values
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
+            if (obj.GetType() != GetType()) return false;
             return Equals((LastPeriodValue) obj);
         }
 
@@ -76,11 +76,8 @@ namespace SmartPlaylist.Domain.Values
 
     public enum PeriodType
     {
-        [EnumMember(Value = "days")]
-        Days = 1,
-        [EnumMember(Value = "weeks")]
-        Weeks = 2,
-        [EnumMember(Value = "months")]
-        Months = 3
+        [EnumMember(Value = "days")] Days = 1,
+        [EnumMember(Value = "weeks")] Weeks = 2,
+        [EnumMember(Value = "months")] Months = 3
     }
 }

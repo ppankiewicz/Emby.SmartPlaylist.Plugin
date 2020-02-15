@@ -11,7 +11,8 @@ namespace SmartPlaylist.Parsers.JsonValueParsers
         {
             val = null;
             var match = ParseRegEx.Match(value);
-            if (match.Success && int.TryParse(match.Groups[1].Value, out var from) && int.TryParse(match.Groups[2].Value, out var to))
+            if (match.Success && int.TryParse(match.Groups[1].Value, out var from) &&
+                int.TryParse(match.Groups[2].Value, out var to))
             {
                 val = NumberRangeValue.Create(from, to);
                 return true;

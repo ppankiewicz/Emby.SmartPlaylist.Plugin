@@ -16,9 +16,6 @@ using SmartPlaylist.Infrastructure.MesssageBus;
 using SmartPlaylist.Infrastructure.MesssageBus.Decorators;
 using SmartPlaylist.Services;
 using SmartPlaylist.Services.SmartPlaylist;
-using SmartPlaylistFileSystem = SmartPlaylist.Services.SmartPlaylist.SmartPlaylistFileSystem;
-using SmartPlaylistProvider = SmartPlaylist.Services.SmartPlaylist.SmartPlaylistProvider;
-using SmartPlaylistStore = SmartPlaylist.Services.SmartPlaylist.SmartPlaylistStore;
 
 namespace SmartPlaylist
 {
@@ -35,8 +32,10 @@ namespace SmartPlaylist
         {
             _logger = logger;
             Instance = this;
-            var smartPlaylistFileSystem = new EnsureBaseDirSmartPlaylistFileSystemDecorator(new SmartPlaylistFileSystem(serverApplicationPaths));
-            var smartPlaylistStore = new CacheableSmartPlaylistStore(new SmartPlaylistStore(jsonSerializer, smartPlaylistFileSystem));
+            var smartPlaylistFileSystem =
+                new EnsureBaseDirSmartPlaylistFileSystemDecorator(new SmartPlaylistFileSystem(serverApplicationPaths));
+            var smartPlaylistStore =
+                new CacheableSmartPlaylistStore(new SmartPlaylistStore(jsonSerializer, smartPlaylistFileSystem));
             var userItemsProvider = new UserItemsProvider(libraryManager);
             var smartPlaylistProvider = new SmartPlaylistProvider(smartPlaylistStore);
             var playlistRepository = new PlaylistRepository(userManager, libraryManager, playlistManager);

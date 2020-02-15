@@ -41,7 +41,7 @@ namespace SmartPlaylist.Domain
                 case ItemSortBy.Artist:
                 {
                     return orderType == SortOrder.Ascending
-                        ? items.OrderBy(x => x, new ArtistsComparer(a=>a.Artists))
+                        ? items.OrderBy(x => x, new ArtistsComparer(a => a.Artists))
                         : items.OrderByDescending(x => x, new ArtistsComparer(a => a.Artists));
                 }
                 case ItemSortBy.AlbumArtist:

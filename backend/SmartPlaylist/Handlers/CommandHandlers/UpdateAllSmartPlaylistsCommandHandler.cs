@@ -31,7 +31,8 @@ namespace SmartPlaylist.Handlers.CommandHandlers
 
         public async Task HandleAsync(UpdateAllSmartPlaylistsCommand message)
         {
-            var smartPlaylists = await _smartPlaylistProvider.GetAllUpdateableSmartPlaylistsAsync().ConfigureAwait(false);
+            var smartPlaylists =
+                await _smartPlaylistProvider.GetAllUpdateableSmartPlaylistsAsync().ConfigureAwait(false);
 
             var smartPlaylistToUpdateWithNewItems = GetSmartPlaylistToUpdateWithNewItems(message, smartPlaylists);
 

@@ -12,7 +12,7 @@ namespace SmartPlaylist.Adapters
     {
         public static RuleGroup Adapt(RuleTreeNodeDto[] allNodes)
         {
-            return AdaptRule(allNodes.First(x=>x.Data.Kind == RuleGroup.Kind), allNodes) as RuleGroup;
+            return AdaptRule(allNodes.First(x => x.Data.Kind == RuleGroup.Kind), allNodes) as RuleGroup;
         }
 
         private static RuleBase AdaptRule(RuleTreeNodeDto node, RuleTreeNodeDto[] allNodes)

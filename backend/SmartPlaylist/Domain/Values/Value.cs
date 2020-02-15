@@ -5,12 +5,10 @@ namespace SmartPlaylist.Domain.Values
 {
     public abstract class Value
     {
+        public static NoneValue None = new NoneValue();
         public abstract string Kind { get; }
 
-        public static NoneValue None = new NoneValue();
-
-        [IgnoreDataMember]
-        public bool IsNone => this == None;
+        [IgnoreDataMember] public bool IsNone => this == None;
 
         public bool IsType(Type type)
         {

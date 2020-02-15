@@ -57,14 +57,16 @@ namespace SmartPlaylist.Services
             return playlists;
         }
 
-        private static Dictionary<User, string[]> GetMissingPlaylistNames(Dictionary<Guid, string[]> playlistNames, UserPlaylistsList playlists)
+        private static Dictionary<User, string[]> GetMissingPlaylistNames(Dictionary<Guid, string[]> playlistNames,
+            UserPlaylistsList playlists)
         {
             var missingPlaylistNames = playlistNames.ToDictionary(x => playlists.GetUser(x.Key),
                 y => GetMissingPlaylistNames(playlists.GetPlaylistsNames(y.Key), playlistNames[y.Key]));
             return missingPlaylistNames;
         }
 
-        private async Task<IEnumerable<UserPlaylists>> CreatePlaylistsAsync(Dictionary<User, string[]> missingPlaylistNames)
+        private async Task<IEnumerable<UserPlaylists>> CreatePlaylistsAsync(
+            Dictionary<User, string[]> missingPlaylistNames)
         {
             var missingPlaylistsTasks =
                 missingPlaylistNames.Select(x => CreatePlaylistsAsync(x.Key, x.Value)).ToArray();
