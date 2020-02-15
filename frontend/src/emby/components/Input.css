@@ -1,0 +1,14 @@
+input[type='text'].input-padding-fix,
+input[type='number'].input-padding-fix {
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    padding-left: 0.5em;
+}
+
+.inline label {
+    display: none;
+}
+
+.inputContainer .inline {
+    width: 100%;
+}

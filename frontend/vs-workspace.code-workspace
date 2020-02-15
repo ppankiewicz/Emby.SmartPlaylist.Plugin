@@ -1,0 +1,17 @@
+{
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "settings": {
+        "files.exclude": {
+            "**/node_modules": true,
+            "**/.awcache": true,
+            "**/dist": true,
+            "**/**/*.css.d.ts": true,
+            "**/**/yarn.lock": true
+        },
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    }
+}

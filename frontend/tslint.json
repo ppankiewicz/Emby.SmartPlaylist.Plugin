@@ -1,0 +1,23 @@
+{
+    "interface-over-type-literal": false,
+    "extends": ["tslint:latest", "tslint-react", "tslint-config-prettier"],
+    "linterOptions": {
+        "exclude": ["dit/**/*", "node_modules/**/*"]
+    },
+    "rules": {
+        "object-literal-shorthand": false,
+        "prefer-for-of": false,
+        "interface-over-type-literal": false,
+        "jsx-no-lambda": false,
+        "no-implicit-dependencies": false,
+        "no-submodule-imports": false,
+        "object-literal-sort-keys": false,
+        "ordered-imports": [
+            true,
+            {
+                "import-sources-order": "any",
+                "named-imports-order": "case-insensitive"
+            }
+        ]
+    }
+}
