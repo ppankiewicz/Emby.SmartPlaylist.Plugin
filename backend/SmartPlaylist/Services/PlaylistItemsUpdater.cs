@@ -31,7 +31,7 @@ namespace SmartPlaylist.Services
         private void AddToPlaylist(UserPlaylist playlist, BaseItem[] itemsToAdd)
         {
             _playlistManager.AddToPlaylist(playlist.Playlist.InternalId,
-                itemsToAdd.Select(x => x.InternalId).ToArray(), playlist.User.InternalId);
+                itemsToAdd.Select(x => x.InternalId).ToArray(), playlist.User);
         }
     }
 }
