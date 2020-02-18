@@ -26,9 +26,9 @@ namespace SmartPlaylist
 
         public static AutoDequeueQueueConfig UpdatedItemsQueueConfig => new AutoDequeueQueueConfig
         {
-            InactiveDequeueTime = TimeSpan.FromSeconds(2),
-            AbsoluteDequeueTime = TimeSpan.FromSeconds(3),
-            MaxItemsLimit = 4
+            InactiveDequeueTime = TimeSpan.FromMinutes(2),
+            AbsoluteDequeueTime = TimeSpan.FromMinutes(5),
+            MaxItemsLimit = 1000
         };
 
 
