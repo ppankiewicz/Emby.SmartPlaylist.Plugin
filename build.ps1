@@ -27,6 +27,7 @@ $MsBuildExe = Find-MsBuild
 
 
 Push-Location $forntendDir
+yarn install
 yarn build
 $exitCode = $?
 Pop-Location
