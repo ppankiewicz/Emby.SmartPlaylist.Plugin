@@ -14,11 +14,11 @@ namespace SmartPlaylist
         public const int ForEachMaxDegreeOfParallelism = 3;
 
 
-        public static readonly Type[] SupportedItemTypes = {typeof(Audio), typeof(Movie), typeof(Episode)};
+        public static readonly Type[] SupportedItemTypes = {typeof(Audio), typeof(Movie), typeof(Episode), typeof(Series) };
         public static readonly string[] SupportedItemTypeNames = SupportedItemTypes.Select(x => x.Name).ToArray();
 
         public static readonly Type[] ListenForChangeItemTypes =
-            SupportedItemTypes.Concat(new[] {typeof(MusicAlbum)}).ToArray();
+            SupportedItemTypes.Concat(new[] {typeof(MusicAlbum), typeof(Season)}).ToArray();
 
 
         public static TimeSpan GetAllSmartPlaylistsCacheExpiration = TimeSpan.FromHours(2);
