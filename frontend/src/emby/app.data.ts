@@ -6,7 +6,7 @@ import { convertObjectPropValues } from '~/common/helpers/object';
 type ApiClient = {
     getPluginConfiguration<TConfig>(pluginId: string): Promise<TConfig>;
     updatePluginConfiguration<TConfig>(pluginId: string, config: TConfig): Promise<any>;
-    ajax<T = any>(request: any, includeAuthorization: boolean): Promise<T>;
+    ajax<T = any>(request: any): Promise<T>;
 };
 
 declare global {
@@ -28,8 +28,7 @@ export const loadAppData = async (appId: string): Promise<AppData> => {
             },
             contentType: 'application/json',
             dataType: 'json',
-        },
-        true,
+        }
     );
 
     appData = camelcaseKeys(appData, {
@@ -56,8 +55,7 @@ export const saveAppPlaylist = async (playlist: AppPlaylist): Promise<AppPlaylis
                 'Content-Type': 'application/json',
             },
             data: JSON.stringify(playlist),
-        },
-        true,
+        }
     );
 };
 
@@ -66,7 +64,6 @@ export const deletePlaylist = async (playlistId: string): Promise<any> => {
         {
             url: `/smartplaylist/${playlistId}`,
             type: 'DELETE',
-        },
-        true,
+        }
     );
 };
