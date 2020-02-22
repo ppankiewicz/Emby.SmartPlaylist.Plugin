@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using MediaBrowser.Controller.Entities;
+using MediaBrowser.Controller.Entities.TV;
 using SmartPlaylist.Comparers;
 using SmartPlaylist.Contracts;
 using SmartPlaylist.Domain.Rule;
@@ -71,13 +72,39 @@ namespace SmartPlaylist.Domain
         {
             var playlistItems = userPlaylist.GetItems();
             var newItems = FilterItems(playlistItems, items, userPlaylist.User);
+            newItems = RemoveMissingEpisodes(newItems);
 
             if (IsShuffleUpdateType) newItems = newItems.Shuffle();
 
             newItems = OrderItems(newItems);
             newItems = newItems.Take(Limit.MaxItems);
 
-            return newItems;
+            return FlattenFolders(newItems).Distinct(new BaseItemEqualByInternalId());
+        }
+
+        private static IEnumerable<BaseItem> RemoveMissingEpisodes(IEnumerable<BaseItem> items)
+        {
+            return items.Where(x => !(x is Episode episode && episode.IsMissingEpisode));
+        }
+
+        private static IEnumerable<BaseItem> FlattenFolders(IEnumerable<BaseItem> newItems)
+        {
+            var newItemsList = new List<BaseItem>();
+            var newItemsArray = newItems.ToArray();
+
+            foreach (var item in newItemsArray)
+            {
+                if (item is Folder folder)
+                {
+                    newItemsList.AddRange(RemoveMissingEpisodes(folder.GetRecursiveChildren()));
+                }
+                else
+                {
+                    newItemsList.Add(item);
+                }
+            }
+
+            return newItemsList;
         }
 
 
