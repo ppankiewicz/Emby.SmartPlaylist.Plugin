@@ -247,4 +247,30 @@ namespace SmartPlaylist.Domain
             return items.OrderByDescending(x => x.SortName);
         }
     }
+
+    public class PremiereDateLimitOrder : LimitOrder
+    {
+        public override string Name => "PremiereDate asc";
+
+        public override (string, SortOrder)[] OrderBy =>
+            new (string, SortOrder)[] {(ItemSortBy.PremiereDate, SortOrder.Ascending)};
+
+        public override IEnumerable<BaseItem> Order(IEnumerable<BaseItem> items)
+        {
+            return items.OrderBy(x => x, new PremiereDateComparer());
+        }
+    }
+
+    public class PremiereDateDescLimitOrder : LimitOrder
+    {
+        public override string Name => "PremiereDate desc";
+
+        public override (string, SortOrder)[] OrderBy =>
+            new (string, SortOrder)[] {(ItemSortBy.PremiereDate, SortOrder.Descending)};
+
+        public override IEnumerable<BaseItem> Order(IEnumerable<BaseItem> items)
+        {
+            return items.OrderByDescending(x => x, new PremiereDateComparer());
+        }
+    }
 }
