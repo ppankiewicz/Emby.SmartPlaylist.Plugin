@@ -21,6 +21,11 @@ namespace SmartPlaylist.Domain.Values
             return new StringValue(value);
         }
 
+        public override string ToString()
+        {
+            return Value;
+        }
+
         protected bool Equals(StringValue other)
         {
             return string.Equals(Value, other.Value, StringComparison.InvariantCultureIgnoreCase);

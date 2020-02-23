@@ -24,30 +24,28 @@ namespace SmartPlaylist.Services
             _playlistManager = playlistManager;
         }
 
-        public UserPlaylistsList GetUserPlaylists(Dictionary<Guid, string[]> playlistNames)
+        public UserPlaylistsList GetUserPlaylists(UserPlaylistInfo[] userPlaylists)
         {
-            var users = playlistNames.Keys.ToDictionary(x => x, GetUser);
-            var playlists = playlistNames.ToDictionary(x => users[x.Key],
-                y => GetUserPlaylists(users[y.Key], y.Value).ToArray());
+            var users = userPlaylists.Select(x => x.UserId).Distinct().ToDictionary(x => x, GetUser);
+            var playlists = userPlaylists.ToDictionary(x => users[x.UserId],
+                y => GetUserPlaylists(userPlaylists.FirstOrDefault(x => x.UserId == y.UserId)));
 
             return new UserPlaylistsList(playlists);
         }
 
-        public async Task<UserPlaylist> GetOrCreateUserPlaylistAsync(Guid userId, string playlistName)
+        public async Task<UserPlaylist> GetOrCreateUserPlaylistAsync(UserPlaylistInfo userPlaylistInfo)
         {
-            return (await GetOrCreateUserPlaylistsAsync(new Dictionary<Guid, string[]>
-            {
-                {userId, new[] {playlistName}}
-            }).ConfigureAwait(false)).SingleByName(userId, playlistName);
+            return (await GetOrCreateUserPlaylistsAsync(new[] {userPlaylistInfo}).ConfigureAwait(false))
+                .SingleByName(userPlaylistInfo.UserId, userPlaylistInfo.FirstPlaylistName);
         }
 
 
         public async Task<UserPlaylistsList> GetOrCreateUserPlaylistsAsync(
-            Dictionary<Guid, string[]> playlistNames)
+            UserPlaylistInfo[] userPlaylists)
         {
-            var playlists = GetUserPlaylists(playlistNames);
+            var playlists = GetUserPlaylists(userPlaylists);
 
-            var missingPlaylistNames = GetMissingPlaylistNames(playlistNames, playlists);
+            var missingPlaylistNames = GetMissingPlaylistNames(userPlaylists, playlists);
 
             var newPlaylists = await CreatePlaylistsAsync(missingPlaylistNames);
             newPlaylists
@@ -57,28 +55,29 @@ namespace SmartPlaylist.Services
             return playlists;
         }
 
-        private static Dictionary<User, string[]> GetMissingPlaylistNames(Dictionary<Guid, string[]> playlistNames,
+        private static UserPlaylistInfo[] GetMissingPlaylistNames(UserPlaylistInfo[] userPlaylists,
             UserPlaylistsList playlists)
         {
-            var missingPlaylistNames = playlistNames.ToDictionary(x => playlists.GetUser(x.Key),
-                y => GetMissingPlaylistNames(playlists.GetPlaylistsNames(y.Key), playlistNames[y.Key]));
-            return missingPlaylistNames;
+            return userPlaylists.Select(x => new UserPlaylistInfo(x.UserId,
+                    x.FilterPlaylists(GetMissingPlaylistNames(playlists.GetPlaylistsNames(x.UserId), x.PlaylistNames))))
+                .ToArray();
         }
 
         private async Task<IEnumerable<UserPlaylists>> CreatePlaylistsAsync(
-            Dictionary<User, string[]> missingPlaylistNames)
+            UserPlaylistInfo[] missingPlaylists)
         {
             var missingPlaylistsTasks =
-                missingPlaylistNames.Select(x => CreatePlaylistsAsync(x.Key, x.Value)).ToArray();
+                missingPlaylists.Select(CreatePlaylistsAsync).ToArray();
             await Task.WhenAll(missingPlaylistsTasks).ConfigureAwait(false);
 
             return missingPlaylistsTasks.Select(result => result.Result);
         }
 
-        private async Task<UserPlaylists> CreatePlaylistsAsync(User user, string[] playlistNames)
+        private async Task<UserPlaylists> CreatePlaylistsAsync(UserPlaylistInfo userPlaylist)
         {
+            var user = GetUser(userPlaylist.UserId);
             var createPlaylistTasks =
-                playlistNames.Select(playlistName => CreatePlaylistAsync(playlistName, user)).ToArray();
+                userPlaylist.PlaylistInfos.Select(p => CreatePlaylistAsync(p, user)).ToArray();
             await Task.WhenAll(createPlaylistTasks).ConfigureAwait(false);
 
             var playlists = GetPlaylists(createPlaylistTasks.Select(x => long.Parse(x.Result.Id)).ToArray());
@@ -90,18 +89,19 @@ namespace SmartPlaylist.Services
         {
             return _libraryManager.GetItemsResult(new InternalItemsQuery
             {
-                IncludeItemTypes = new[] {"Playlist"},
+                IncludeItemTypes = new[] {nameof(Playlist)},
                 ItemIds = playlistIds
             }).Items.OfType<Playlist>().ToArray();
         }
 
 
-        private async Task<PlaylistCreationResult> CreatePlaylistAsync(string name, User user)
+        private async Task<PlaylistCreationResult> CreatePlaylistAsync(PlaylistInfo playlistInfo, User user)
         {
             return await _playlistManager.CreatePlaylist(new PlaylistCreationRequest
             {
-                Name = name,
-                UserId = user.InternalId
+                Name = playlistInfo.PlaylistName,
+                UserId = user.InternalId,
+                MediaType = playlistInfo.MediaType
             }).ConfigureAwait(false);
         }
 
@@ -110,14 +110,15 @@ namespace SmartPlaylist.Services
             return _userManager.GetUserById(userId);
         }
 
-        private Playlist[] GetUserPlaylists(User user, string[] namesFilter)
+        private Playlist[] GetUserPlaylists(UserPlaylistInfo userPlaylist)
         {
+            var user = GetUser(userPlaylist.UserId);
             return _libraryManager.GetItemsResult(new InternalItemsQuery(user)
                 {
                     IncludeItemTypes = new[] {typeof(Playlist).Name},
                     Recursive = true
                 }).Items.OfType<Playlist>()
-                .Where(x => namesFilter.Contains(x.Name))
+                .Where(x => userPlaylist.PlaylistNames.Contains(x.Name))
                 .ToArray();
         }
 

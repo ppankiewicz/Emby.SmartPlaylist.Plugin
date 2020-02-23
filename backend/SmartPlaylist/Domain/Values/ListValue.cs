@@ -15,6 +15,10 @@ namespace SmartPlaylist.Domain.Values
 
         public string Value { get; }
 
+        public override string ToString()
+        {
+            return Value;
+        }
 
         protected bool Equals(ListValue other)
         {

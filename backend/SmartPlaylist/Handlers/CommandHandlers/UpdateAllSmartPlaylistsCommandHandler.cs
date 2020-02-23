@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MediaBrowser.Controller.Entities;
@@ -73,11 +72,12 @@ namespace SmartPlaylist.Handlers.CommandHandlers
             smartPlaylists.ToList().ForEach(x => _messageBus.Publish(new UpdateSmartPlaylistCommand(x.Id)));
         }
 
-        private static Dictionary<Guid, string[]> GroupPlaylistNamesByUser(
+        private static UserPlaylistInfo[] GroupPlaylistNamesByUser(
             IEnumerable<Domain.SmartPlaylist> smartPlaylists)
         {
-            return smartPlaylists.GroupBy(x => x.UserId, y => y.Name)
-                .ToDictionary(x => x.Key, y => y.ToArray());
+            return smartPlaylists.GroupBy(x => x.UserId, y => y)
+                .Select(x =>
+                    new UserPlaylistInfo(x.Key, PlaylistInfo.Create(x.ToArray()))).ToArray();
         }
     }
 }

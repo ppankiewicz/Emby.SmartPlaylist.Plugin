@@ -33,7 +33,7 @@ namespace SmartPlaylist.Handlers.CommandHandlers
             var smartPlaylist = await _smartPlaylistProvider.GetSmartPlaylistAsync(message.SmartPlaylistId)
                 .ConfigureAwait(false);
             var playlist = await _playlistRepository
-                .GetOrCreateUserPlaylistAsync(smartPlaylist.UserId, smartPlaylist.Name)
+                .GetOrCreateUserPlaylistAsync(new UserPlaylistInfo(smartPlaylist))
                 .ConfigureAwait(false);
 
             var items = _userItemsProvider.GetItems(playlist.User, Const.SupportedItemTypeNames);
