@@ -148,4 +148,20 @@ namespace SmartPlaylist.Domain
         public override (string, SortOrder)[] OrderBy =>
             new (string, SortOrder)[] { (ItemSortBy.AiredEpisodeOrder, SortOrder.Ascending) };
     }
+
+    public class SortNameLimitOrder : LimitOrder
+    {
+        public override string Name => "SortName asc";
+
+        public override (string, SortOrder)[] OrderBy =>
+            new (string, SortOrder)[] { (ItemSortBy.SortName, SortOrder.Ascending) };
+    }
+
+    public class SortNameDescLimitOrder : LimitOrder
+    {
+        public override string Name => "SortName desc";
+
+        public override (string, SortOrder)[] OrderBy =>
+            new (string, SortOrder)[] { (ItemSortBy.SortName, SortOrder.Descending) };
+    }
 }

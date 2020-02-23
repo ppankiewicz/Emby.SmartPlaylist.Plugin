@@ -74,6 +74,12 @@ namespace SmartPlaylist.Domain
                         ? items.OrderBy(x => x, new EpisodeComparer())
                         : items.OrderByDescending(x => x, new EpisodeComparer());
                 }
+                case ItemSortBy.SortName:
+                {
+                    return orderType == SortOrder.Ascending
+                        ? items.OrderBy(x => x.SortName)
+                        : items.OrderByDescending(x => x.SortName);
+                }
                 default:
                     return items;
             }
