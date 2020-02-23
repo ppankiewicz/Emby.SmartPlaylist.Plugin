@@ -68,6 +68,12 @@ namespace SmartPlaylist.Domain
                         ? items.OrderBy(x => x.LastPlayedDate)
                         : items.OrderByDescending(x => x.LastPlayedDate);
                 }
+                case ItemSortBy.AiredEpisodeOrder:
+                {
+                    return orderType == SortOrder.Ascending
+                        ? items.OrderBy(x => x, new EpisodeComparer())
+                        : items.OrderByDescending(x => x, new EpisodeComparer());
+                }
                 default:
                     return items;
             }

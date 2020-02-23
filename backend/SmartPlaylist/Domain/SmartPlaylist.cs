@@ -76,10 +76,11 @@ namespace SmartPlaylist.Domain
 
             if (IsShuffleUpdateType) newItems = newItems.Shuffle();
 
+            newItems = FlattenFolders(newItems).Distinct(new BaseItemEqualByInternalId());
             newItems = OrderItems(newItems);
             newItems = newItems.Take(Limit.MaxItems);
 
-            return FlattenFolders(newItems).Distinct(new BaseItemEqualByInternalId());
+            return newItems;
         }
 
         private static IEnumerable<BaseItem> RemoveMissingEpisodes(IEnumerable<BaseItem> items)
