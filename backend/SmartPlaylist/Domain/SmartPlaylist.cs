@@ -111,7 +111,7 @@ namespace SmartPlaylist.Domain
 
         private IEnumerable<BaseItem> OrderItems(IEnumerable<BaseItem> playlistItems)
         {
-            return ItemsSorter.OrderItems(Limit.OrderBy.OrderBy, playlistItems);
+            return Limit.OrderBy.Order(playlistItems);
         }
 
         private IEnumerable<BaseItem> FilterItems(IEnumerable<BaseItem> playlistItems, IEnumerable<BaseItem> newItems,
