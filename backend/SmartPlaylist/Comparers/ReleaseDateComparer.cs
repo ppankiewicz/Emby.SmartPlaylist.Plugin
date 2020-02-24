@@ -5,14 +5,14 @@ using MediaBrowser.Controller.Entities;
 
 namespace SmartPlaylist.Comparers
 {
-    public class PremiereDateComparer : IComparer<BaseItem>
+    public class ReleaseDateComparer : IComparer<BaseItem>
     {
         public int Compare(BaseItem x, BaseItem y)
         {
-            return GetPremiereDate(x).CompareTo(GetPremiereDate(y));
+            return GetReleaseDate(x).CompareTo(GetReleaseDate(y));
         }
 
-        private DateTimeOffset GetPremiereDate(BaseItem baseItem)
+        private DateTimeOffset GetReleaseDate(BaseItem baseItem)
         {
             return baseItem.PremiereDate.GetValueOrDefault(GetDate(baseItem.ProductionYear.GetValueOrDefault(0)));
         }
