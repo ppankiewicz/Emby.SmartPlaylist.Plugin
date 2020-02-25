@@ -21,7 +21,7 @@ namespace SmartPlaylist.Domain.CriteriaDefinition.CriteriaDefinitions
 
         private static int GetMinutes(long ticks)
         {
-            return (int) Math.Ceiling(new TimeSpan(ticks).TotalMinutes);
+            return (int) TimeSpan.FromTicks(ticks).TotalMinutes;
         }
     }
 }
