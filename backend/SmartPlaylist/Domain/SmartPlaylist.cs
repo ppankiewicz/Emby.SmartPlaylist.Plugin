@@ -78,7 +78,6 @@ namespace SmartPlaylist.Domain
 
             if (IsShuffleUpdateType) newItems = newItems.Shuffle();
 
-            newItems = FlattenFolders(newItems).Distinct(new BaseItemEqualByInternalId());
             newItems = OrderItems(newItems);
             newItems = newItems.Take(Limit.MaxItems);
 
@@ -89,21 +88,6 @@ namespace SmartPlaylist.Domain
         {
             return items.Where(x => !(x is Episode episode && episode.IsMissingEpisode));
         }
-
-        private static IEnumerable<BaseItem> FlattenFolders(IEnumerable<BaseItem> newItems)
-        {
-            var newItemsList = new List<BaseItem>();
-            var newItemsArray = newItems.ToArray();
-
-            foreach (var item in newItemsArray)
-                if (item is Folder folder)
-                    newItemsList.AddRange(RemoveMissingEpisodes(folder.GetRecursiveChildren()));
-                else
-                    newItemsList.Add(item);
-
-            return newItemsList;
-        }
-
 
         private IEnumerable<BaseItem> OrderItems(IEnumerable<BaseItem> playlistItems)
         {

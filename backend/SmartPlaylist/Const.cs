@@ -19,12 +19,12 @@ namespace SmartPlaylist
 
 
         public static readonly Type[] SupportedItemTypes =
-            {typeof(Audio), typeof(Movie), typeof(Episode), typeof(Series)};
+            {typeof(Audio), typeof(Movie), typeof(Episode)};
 
         public static readonly string[] SupportedItemTypeNames = SupportedItemTypes.Select(x => x.Name).ToArray();
 
         public static readonly Type[] ListenForChangeItemTypes =
-            SupportedItemTypes.Concat(new[] {typeof(MusicAlbum), typeof(Season)}).ToArray();
+            SupportedItemTypes.Concat(new[] {typeof(MusicAlbum), typeof(Season), typeof(Series)}).ToArray();
 
 
         public static TimeSpan GetAllSmartPlaylistsCacheExpiration = TimeSpan.FromHours(2);
