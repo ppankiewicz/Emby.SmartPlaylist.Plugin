@@ -10,11 +10,17 @@ namespace SmartPlaylist
 {
     public static class Const
     {
+#if DEBUG
+        public const int MaxGetUserItemsCount = 100;
+#else
         public const int MaxGetUserItemsCount = 10000;
+#endif
         public const int ForEachMaxDegreeOfParallelism = 3;
 
 
-        public static readonly Type[] SupportedItemTypes = {typeof(Audio), typeof(Movie), typeof(Episode), typeof(Series) };
+        public static readonly Type[] SupportedItemTypes =
+            {typeof(Audio), typeof(Movie), typeof(Episode), typeof(Series)};
+
         public static readonly string[] SupportedItemTypeNames = SupportedItemTypes.Select(x => x.Name).ToArray();
 
         public static readonly Type[] ListenForChangeItemTypes =
@@ -26,9 +32,15 @@ namespace SmartPlaylist
 
         public static AutoDequeueQueueConfig UpdatedItemsQueueConfig => new AutoDequeueQueueConfig
         {
+#if DEBUG
+            InactiveDequeueTime = TimeSpan.FromSeconds(2),
+            AbsoluteDequeueTime = TimeSpan.FromSeconds(5),
+            MaxItemsLimit = 5
+#else
             InactiveDequeueTime = TimeSpan.FromMinutes(2),
             AbsoluteDequeueTime = TimeSpan.FromMinutes(5),
             MaxItemsLimit = 1000
+#endif
         };
 
 
