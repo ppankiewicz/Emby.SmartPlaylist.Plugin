@@ -35,7 +35,7 @@ namespace SmartPlaylist
             var smartPlaylistFileSystem =
                 new EnsureBaseDirSmartPlaylistFileSystemDecorator(new SmartPlaylistFileSystem(serverApplicationPaths));
             var smartPlaylistStore =
-                new CacheableSmartPlaylistStore(new SmartPlaylistStore(jsonSerializer, smartPlaylistFileSystem));
+                new CacheableSmartPlaylistStore(new CleanupOldCriteriaDecorator(new SmartPlaylistStore(jsonSerializer, smartPlaylistFileSystem)));
             var userItemsProvider = new UserItemsProvider(libraryManager);
             var smartPlaylistProvider = new SmartPlaylistProvider(smartPlaylistStore);
             var playlistRepository = new PlaylistRepository(userManager, libraryManager, playlistManager);

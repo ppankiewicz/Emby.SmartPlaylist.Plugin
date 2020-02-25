@@ -26,9 +26,9 @@ namespace SmartPlaylist.Domain
 
     public static class DefinedLimitOrders
     {
-        public static LimitOrder[] All = typeof(LimitOrder).Assembly.FindAndCreateDerivedTypes<LimitOrder>().ToArray();
+        public static readonly LimitOrder[] All = typeof(LimitOrder).Assembly.FindAndCreateDerivedTypes<LimitOrder>().ToArray();
 
-        public static string[] AllNames = All.Select(x => x.Name).ToArray();
+        public static readonly string[] AllNames = All.Select(x => x.Name).ToArray();
     }
 
     public abstract class LimitOrder
