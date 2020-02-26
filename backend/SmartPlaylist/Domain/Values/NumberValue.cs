@@ -2,7 +2,7 @@
 {
     public class NumberValue : Value
     {
-        public static NumberValue Default = new NumberValue(0);
+        public static readonly NumberValue Default = new NumberValue(0);
 
         public NumberValue(int value)
         {

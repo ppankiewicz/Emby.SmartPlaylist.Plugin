@@ -2,7 +2,7 @@
 {
     public class NumberRangeValue : Value
     {
-        public static NumberRangeValue Default = new NumberRangeValue(0, 0);
+        public static readonly NumberRangeValue Default = new NumberRangeValue(0, 0);
 
         public NumberRangeValue(int from, int to)
         {

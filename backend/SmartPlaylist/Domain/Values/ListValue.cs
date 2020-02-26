@@ -4,7 +4,7 @@ namespace SmartPlaylist.Domain.Values
 {
     public class ListValue : Value
     {
-        public static ListValue Default = new ListValue(string.Empty);
+        public static readonly ListValue Default = new ListValue(string.Empty);
 
         public ListValue(string value)
         {

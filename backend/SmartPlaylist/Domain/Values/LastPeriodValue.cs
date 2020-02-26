@@ -5,7 +5,7 @@ namespace SmartPlaylist.Domain.Values
 {
     public class LastPeriodValue : Value
     {
-        public static LastPeriodValue Default = new LastPeriodValue(1, PeriodType.Weeks);
+        public static readonly LastPeriodValue Default = new LastPeriodValue(1, PeriodType.Weeks);
 
         public LastPeriodValue(int value, PeriodType periodType)
         {

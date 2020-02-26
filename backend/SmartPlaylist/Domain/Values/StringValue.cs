@@ -5,7 +5,7 @@ namespace SmartPlaylist.Domain.Values
 {
     public class StringValue : Value
     {
-        public static StringValue Default = new StringValue(string.Empty);
+        public static readonly StringValue Default = new StringValue(string.Empty);
 
         public StringValue(string value)
         {

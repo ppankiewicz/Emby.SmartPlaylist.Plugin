@@ -2,7 +2,7 @@
 {
     public class BoolValue : Value
     {
-        public static BoolValue Default = new BoolValue(false);
+        public static readonly BoolValue Default = new BoolValue(false);
 
 
         public BoolValue(bool value)

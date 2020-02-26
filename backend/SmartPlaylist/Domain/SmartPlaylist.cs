@@ -76,9 +76,15 @@ namespace SmartPlaylist.Domain
             var newItems = FilterItems(playlistItems, items, userPlaylist.User);
             newItems = RemoveMissingEpisodes(newItems);
 
-            if (IsShuffleUpdateType) newItems = newItems.Shuffle();
+            if (IsShuffleUpdateType)
+            {
+                newItems = newItems.Shuffle();
+            }
+            else
+            {
+                newItems = OrderItems(newItems);
+            }
 
-            newItems = OrderItems(newItems);
             newItems = newItems.Take(Limit.MaxItems);
 
             return newItems;

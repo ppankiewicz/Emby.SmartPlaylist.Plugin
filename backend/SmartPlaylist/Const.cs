@@ -27,10 +27,10 @@ namespace SmartPlaylist
             SupportedItemTypes.Concat(new[] {typeof(MusicAlbum), typeof(Season), typeof(Series)}).ToArray();
 
 
-        public static TimeSpan GetAllSmartPlaylistsCacheExpiration = TimeSpan.FromHours(2);
-        public static TimeSpan DefaultSemaphoreSlimTimeout = TimeSpan.FromSeconds(30);
+        public static readonly TimeSpan GetAllSmartPlaylistsCacheExpiration = TimeSpan.FromHours(2);
+        public static readonly TimeSpan DefaultSemaphoreSlimTimeout = TimeSpan.FromSeconds(30);
 
-        public static AutoDequeueQueueConfig UpdatedItemsQueueConfig => new AutoDequeueQueueConfig
+        public static readonly AutoDequeueQueueConfig UpdatedItemsQueueConfig = new AutoDequeueQueueConfig
         {
 #if DEBUG
             InactiveDequeueTime = TimeSpan.FromSeconds(2),
@@ -44,16 +44,9 @@ namespace SmartPlaylist
         };
 
 
-        public static TaskTriggerInfo[] RefreshAllSmartPlaylistsTaskTriggers
-        {
-            get
-            {
-                return new[]
-                {
-                    new TaskTriggerInfo
-                        {Type = TaskTriggerInfo.TriggerDaily, TimeOfDayTicks = TimeSpan.FromHours(1).Ticks}
-                };
-            }
-        }
+        public static readonly TaskTriggerInfo[] RefreshAllSmartPlaylistsTaskTriggers = {
+            new TaskTriggerInfo
+                {Type = TaskTriggerInfo.TriggerDaily, TimeOfDayTicks = TimeSpan.FromHours(1).Ticks}
+        };
     }
 }
