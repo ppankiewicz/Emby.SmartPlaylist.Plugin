@@ -11,10 +11,10 @@ namespace SmartPlaylist.Domain
 {
     public class SmartPlaylistLimit
     {
-        public static SmartPlaylistLimit None => new SmartPlaylistLimit
+        public static readonly SmartPlaylistLimit None = new SmartPlaylistLimit
         {
             MaxItems = 100000,
-            OrderBy = new RandomLimitOrder()
+            OrderBy = new NoneLimitOrder()
         };
 
         public int MaxItems { get; set; }
@@ -26,7 +26,8 @@ namespace SmartPlaylist.Domain
 
     public static class DefinedLimitOrders
     {
-        public static readonly LimitOrder[] All = typeof(LimitOrder).Assembly.FindAndCreateDerivedTypes<LimitOrder>().ToArray();
+        public static readonly LimitOrder[] All = typeof(LimitOrder).Assembly.FindAndCreateDerivedTypes<LimitOrder>()
+            .Where(x => x.GetType() != SmartPlaylistLimit.None.OrderBy.GetType()).ToArray();
 
         public static readonly string[] AllNames = All.Select(x => x.Name).ToArray();
     }
@@ -49,6 +50,11 @@ namespace SmartPlaylist.Domain
 
         public override (string, SortOrder)[] OrderBy => new (string, SortOrder)[]
             {(ItemSortBy.Random, SortOrder.Ascending)};
+
+        public override IEnumerable<BaseItem> Order(IEnumerable<BaseItem> items)
+        {
+            return items.Shuffle();
+        }
     }
 
     public class AlbumLimitOrder : LimitOrder
@@ -279,7 +285,7 @@ namespace SmartPlaylist.Domain
         public override string Name => "Runtime asc";
 
         public override (string, SortOrder)[] OrderBy =>
-            new (string, SortOrder)[] { (ItemSortBy.Runtime, SortOrder.Ascending) };
+            new (string, SortOrder)[] {(ItemSortBy.Runtime, SortOrder.Ascending)};
 
         public override IEnumerable<BaseItem> Order(IEnumerable<BaseItem> items)
         {
@@ -292,11 +298,16 @@ namespace SmartPlaylist.Domain
         public override string Name => "Runtime desc";
 
         public override (string, SortOrder)[] OrderBy =>
-            new (string, SortOrder)[] { (ItemSortBy.Runtime, SortOrder.Descending) };
+            new (string, SortOrder)[] {(ItemSortBy.Runtime, SortOrder.Descending)};
 
         public override IEnumerable<BaseItem> Order(IEnumerable<BaseItem> items)
         {
             return items.OrderByDescending(x => x.RunTimeTicks);
         }
+    }
+
+    public class NoneLimitOrder : LimitOrder
+    {
+        public override string Name => "None";
     }
 }
