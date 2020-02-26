@@ -24,6 +24,11 @@ namespace SmartPlaylist.Domain
         public bool HasLimit => this != None;
     }
 
+    public class NoneLimitOrder : LimitOrder
+    {
+        public override string Name => "None";
+    }
+
     public static class DefinedLimitOrders
     {
         public static readonly LimitOrder[] All = typeof(LimitOrder).Assembly.FindAndCreateDerivedTypes<LimitOrder>()
@@ -306,8 +311,56 @@ namespace SmartPlaylist.Domain
         }
     }
 
-    public class NoneLimitOrder : LimitOrder
+    public class CommunityRatingLimitOrder : LimitOrder
     {
-        public override string Name => "None";
+        public override string Name => "Community rating asc";
+
+        public override (string, SortOrder)[] OrderBy =>
+            new (string, SortOrder)[] { (ItemSortBy.CommunityRating, SortOrder.Descending) };
+
+        public override IEnumerable<BaseItem> Order(IEnumerable<BaseItem> items)
+        {
+            return items.OrderBy(x => x.CommunityRating);
+        }
     }
+
+    public class CommunityRatingDescLimitOrder : LimitOrder
+    {
+        public override string Name => "Community rating desc";
+
+        public override (string, SortOrder)[] OrderBy =>
+            new (string, SortOrder)[] { (ItemSortBy.CommunityRating, SortOrder.Descending) };
+
+        public override IEnumerable<BaseItem> Order(IEnumerable<BaseItem> items)
+        {
+            return items.OrderByDescending(x => x.CommunityRating);
+        }
+    }
+
+    public class ParentalRatingLimitOrder : LimitOrder
+    {
+        public override string Name => "Parental rating asc";
+
+        public override (string, SortOrder)[] OrderBy =>
+            new (string, SortOrder)[] { (ItemSortBy.OfficialRating, SortOrder.Descending) };
+
+        public override IEnumerable<BaseItem> Order(IEnumerable<BaseItem> items)
+        {
+            return items.OrderBy(x => x.OfficialRating);
+        }
+    }
+
+    public class ParentalRatingDescLimitOrder : LimitOrder
+    {
+        public override string Name => "Parental rating desc";
+
+        public override (string, SortOrder)[] OrderBy =>
+            new (string, SortOrder)[] { (ItemSortBy.OfficialRating, SortOrder.Descending) };
+
+        public override IEnumerable<BaseItem> Order(IEnumerable<BaseItem> items)
+        {
+            return items.OrderByDescending(x => x.OfficialRating);
+        }
+    }
+
 }
