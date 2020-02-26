@@ -4,9 +4,9 @@ using SmartPlaylist.Domain.Values;
 
 namespace SmartPlaylist.Domain.CriteriaDefinition.CriteriaDefinitions
 {
-    public class DurationCriteriaDefinition : CriteriaDefinition
+    public class RuntimeCriteriaDefinition : CriteriaDefinition
     {
-        public override string Name => "Duration(minutes)";
+        public override string Name => "Runtime(minutes)";
         public override CriteriaDefinitionType Type => NumberDefinitionType.Instance;
 
         public override Value GetValue(UserItem item)

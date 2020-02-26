@@ -274,9 +274,9 @@ namespace SmartPlaylist.Domain
         }
     }
 
-    public class DurationLimitOrder : LimitOrder
+    public class RuntimeLimitOrder : LimitOrder
     {
-        public override string Name => "Duration asc";
+        public override string Name => "Runtime asc";
 
         public override (string, SortOrder)[] OrderBy =>
             new (string, SortOrder)[] { (ItemSortBy.Runtime, SortOrder.Ascending) };
@@ -287,9 +287,9 @@ namespace SmartPlaylist.Domain
         }
     }
 
-    public class DurationDescLimitOrder : LimitOrder
+    public class RuntimeDescLimitOrder : LimitOrder
     {
-        public override string Name => "Duration desc";
+        public override string Name => "Runtime desc";
 
         public override (string, SortOrder)[] OrderBy =>
             new (string, SortOrder)[] { (ItemSortBy.Runtime, SortOrder.Descending) };
