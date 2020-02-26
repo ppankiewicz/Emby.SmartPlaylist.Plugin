@@ -32,14 +32,12 @@ namespace SmartPlaylist.Handlers.CommandHandlers
         {
             var smartPlaylist = await _smartPlaylistProvider.GetSmartPlaylistAsync(message.SmartPlaylistId)
                 .ConfigureAwait(false);
-            var playlist = await _playlistRepository
-                .GetOrCreateUserPlaylistAsync(new UserPlaylistInfo(smartPlaylist))
-                .ConfigureAwait(false);
+            var playlist = _playlistRepository.GetUserPlaylist(smartPlaylist.UserId, smartPlaylist.Name);
 
             var items = _userItemsProvider.GetItems(playlist.User, Const.SupportedItemTypeNames);
             var newItems = smartPlaylist.FilterPlaylistItems(playlist, items.ToArray()).ToArray();
 
-            _playlistItemsUpdater.Update(playlist, newItems);
+            await _playlistItemsUpdater.UpdateAsync(playlist, newItems).ConfigureAwait(false);
 
             if (smartPlaylist.IsShuffleUpdateType)
             {

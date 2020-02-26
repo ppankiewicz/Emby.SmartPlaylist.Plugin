@@ -43,7 +43,7 @@ namespace SmartPlaylist
                     new CleanupOldCriteriaDecorator(new SmartPlaylistStore(jsonSerializer, smartPlaylistFileSystem)));
             var userItemsProvider = new UserItemsProvider(libraryManager);
             var smartPlaylistProvider = new SmartPlaylistProvider(smartPlaylistStore);
-            var playlistRepository = new PlaylistRepository(userManager, libraryManager, playlistManager);
+            var playlistRepository = new PlaylistRepository(userManager, libraryManager);
             var playlistItemsUpdater = new PlaylistItemsUpdater(playlistManager);
 
             MessageBus = new MessageBus();
