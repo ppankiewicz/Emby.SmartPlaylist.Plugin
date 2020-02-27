@@ -4,7 +4,7 @@ namespace SmartPlaylist.Domain.Values
 {
     public class DateValue : Value
     {
-        public static DateValue Default = new DateValue(DateTimeOffset.UtcNow);
+        public static readonly DateValue Default = new DateValue(DateTimeOffset.UtcNow);
 
         public DateValue(DateTimeOffset value)
         {

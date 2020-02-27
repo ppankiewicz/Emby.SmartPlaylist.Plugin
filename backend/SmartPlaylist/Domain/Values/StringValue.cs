@@ -5,7 +5,7 @@ namespace SmartPlaylist.Domain.Values
 {
     public class StringValue : Value
     {
-        public static StringValue Default = new StringValue(string.Empty);
+        public static readonly StringValue Default = new StringValue(string.Empty);
 
         public StringValue(string value)
         {
@@ -19,6 +19,11 @@ namespace SmartPlaylist.Domain.Values
         public static StringValue Create(string value)
         {
             return new StringValue(value);
+        }
+
+        public override string ToString()
+        {
+            return Value;
         }
 
         protected bool Equals(StringValue other)

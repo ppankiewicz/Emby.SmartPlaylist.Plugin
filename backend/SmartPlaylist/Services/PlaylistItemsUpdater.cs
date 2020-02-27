@@ -1,6 +1,8 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Playlists;
+using MediaBrowser.Model.Playlists;
 using SmartPlaylist.Domain;
 
 namespace SmartPlaylist.Services
@@ -14,23 +16,34 @@ namespace SmartPlaylist.Services
             _playlistManager = playlistManager;
         }
 
-        public void Update(UserPlaylist playlist, BaseItem[] newItems)
+        public async Task UpdateAsync(UserPlaylist playlist, BaseItem[] newItems)
         {
             var playlistItems = playlist.GetItems();
-
-            RemoveFromPlaylist(playlist, playlistItems);
-            AddToPlaylist(playlist, newItems);
+            if (playlist is LibraryUserPlaylist libraryUserPlaylist)
+            {
+                RemoveFromPlaylist(libraryUserPlaylist, playlistItems);
+                AddToPlaylist(libraryUserPlaylist, newItems);
+            }
+            else if(newItems.Any())
+            {
+                await _playlistManager.CreatePlaylist(new PlaylistCreationRequest
+                {
+                    ItemIdList = newItems.Select(x => x.InternalId).ToArray(),
+                    Name = playlist.Name,
+                    UserId = playlist.User.InternalId
+                }).ConfigureAwait(false);
+            }
         }
 
-        private void RemoveFromPlaylist(UserPlaylist playlist, BaseItem[] itemsToRemove)
+        private void RemoveFromPlaylist(LibraryUserPlaylist playlist, BaseItem[] itemsToRemove)
         {
-            _playlistManager.RemoveFromPlaylist(playlist.Playlist.InternalId,
+            _playlistManager.RemoveFromPlaylist(playlist.InternalId,
                 itemsToRemove.Select(x => x.ListItemEntryId).ToArray());
         }
 
-        private void AddToPlaylist(UserPlaylist playlist, BaseItem[] itemsToAdd)
+        private void AddToPlaylist(LibraryUserPlaylist playlist, BaseItem[] itemsToAdd)
         {
-            _playlistManager.AddToPlaylist(playlist.Playlist.InternalId,
+            _playlistManager.AddToPlaylist(playlist.InternalId,
                 itemsToAdd.Select(x => x.InternalId).ToArray(), playlist.User);
         }
     }

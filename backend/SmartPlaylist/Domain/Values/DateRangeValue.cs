@@ -4,7 +4,7 @@ namespace SmartPlaylist.Domain.Values
 {
     public class DateRangeValue : Value
     {
-        public static DateRangeValue Default =
+        public static readonly DateRangeValue Default =
             new DateRangeValue(DateTimeOffset.UtcNow, DateTimeOffset.UtcNow.AddMonths(1));
 
         public DateRangeValue(DateTimeOffset from, DateTimeOffset to)

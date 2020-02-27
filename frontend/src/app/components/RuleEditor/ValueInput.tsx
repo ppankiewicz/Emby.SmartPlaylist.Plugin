@@ -5,6 +5,7 @@ import {
     DateValue,
     LastPeriodValue,
     ListValue,
+    ListValueRange,
     NumberRangeValue,
     NumberValue,
     OperatorType,
@@ -17,6 +18,7 @@ import { StringValueInput } from '~/app/components/RuleEditor/ValueInputs/String
 import { ListValueInput } from '~/app/components/RuleEditor/ValueInputs/ListValue';
 import { NumberValueInput } from '~/app/components/RuleEditor/ValueInputs/NumberValue';
 import { NumberRangeValueInput } from '~/app/components/RuleEditor/ValueInputs/NumberRange';
+import { ListValueRangeInput } from '~/app/components/RuleEditor/ValueInputs/ListValueRange';
 
 type ValueInputProps = {
     type: OperatorType;
@@ -74,6 +76,14 @@ export const ValueInput: React.FC<ValueInputProps> = props => {
                 return (
                     <NumberRangeValueInput
                         value={value as NumberRangeValue}
+                        onChange={newVal => onChange(newVal)}
+                    />
+                );
+            case 'listValueRange':
+                return (
+                    <ListValueRangeInput
+                        value={value as ListValueRange}
+                        values={values as ListValue[]}
                         onChange={newVal => onChange(newVal)}
                     />
                 );

@@ -21,7 +21,8 @@ export type CrtieriaValue =
     | DateRangeValue
     | ListValue
     | NumberValue
-    | NumberRangeValue;
+    | NumberRangeValue
+    | ListValueRange;
 
 export type RuleCriteriaValue = {
     name: string;
@@ -50,6 +51,7 @@ export type OperatorType =
     | 'listValue'
     | 'number'
     | 'numberRange'
+    | 'listValueRange'
     | 'bool';
 
 export type RuleCriteriaDefinitionType = {
@@ -93,11 +95,18 @@ export type NumberRangeValue = {
 export type ListValue = {
     kind: 'listValue';
     value: string;
+    numValue: number;
 };
 
 export type BoolValue = {
     kind: 'bool';
     value: boolean;
+};
+
+export type ListValueRange = {
+    kind: 'listValueRange';
+    from: ListValue;
+    to: ListValue;
 };
 
 export type Period = typeof PeriodValues[number];

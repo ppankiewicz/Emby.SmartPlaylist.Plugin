@@ -25,6 +25,7 @@ namespace SmartPlaylist.Domain
             Limit = limit;
             LastShuffleUpdate = lastShuffleUpdate;
             UpdateType = updateType;
+            MediaType = MediaTypeGetter.Get(rules);
         }
 
         public Guid Id { get; }
@@ -46,6 +47,7 @@ namespace SmartPlaylist.Domain
 
         public bool CanUpdatePlaylistWithNewItems => (IsRandomSort || !Limit.HasLimit) && !IsShuffleUpdateType;
         public bool IsRandomSort => Limit.OrderBy is RandomLimitOrder;
+        public string MediaType { get; }
 
         private bool CheckIfCanUpdatePlaylist()
         {
@@ -74,12 +76,18 @@ namespace SmartPlaylist.Domain
             var newItems = FilterItems(playlistItems, items, userPlaylist.User);
             newItems = RemoveMissingEpisodes(newItems);
 
-            if (IsShuffleUpdateType) newItems = newItems.Shuffle();
+            if (IsShuffleUpdateType)
+            {
+                newItems = newItems.Shuffle();
+            }
+            else
+            {
+                newItems = OrderItems(newItems);
+            }
 
-            newItems = OrderItems(newItems);
             newItems = newItems.Take(Limit.MaxItems);
 
-            return FlattenFolders(newItems).Distinct(new BaseItemEqualByInternalId());
+            return newItems;
         }
 
         private static IEnumerable<BaseItem> RemoveMissingEpisodes(IEnumerable<BaseItem> items)
@@ -87,30 +95,9 @@ namespace SmartPlaylist.Domain
             return items.Where(x => !(x is Episode episode && episode.IsMissingEpisode));
         }
 
-        private static IEnumerable<BaseItem> FlattenFolders(IEnumerable<BaseItem> newItems)
-        {
-            var newItemsList = new List<BaseItem>();
-            var newItemsArray = newItems.ToArray();
-
-            foreach (var item in newItemsArray)
-            {
-                if (item is Folder folder)
-                {
-                    newItemsList.AddRange(RemoveMissingEpisodes(folder.GetRecursiveChildren()));
-                }
-                else
-                {
-                    newItemsList.Add(item);
-                }
-            }
-
-            return newItemsList;
-        }
-
-
         private IEnumerable<BaseItem> OrderItems(IEnumerable<BaseItem> playlistItems)
         {
-            return ItemsSorter.OrderItems(Limit.OrderBy.OrderBy, playlistItems);
+            return Limit.OrderBy.Order(playlistItems);
         }
 
         private IEnumerable<BaseItem> FilterItems(IEnumerable<BaseItem> playlistItems, IEnumerable<BaseItem> newItems,

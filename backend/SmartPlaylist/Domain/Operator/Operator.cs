@@ -1,4 +1,5 @@
-﻿using SmartPlaylist.Domain.Values;
+﻿using SmartPlaylist.Contracts;
+using SmartPlaylist.Domain.Values;
 
 namespace SmartPlaylist.Domain.Operator
 {
@@ -6,7 +7,7 @@ namespace SmartPlaylist.Domain.Operator
     {
         public abstract string Name { get; }
 
-        public string Type => DefaultValue.Kind;
+        public virtual string Type => DefaultValue.Kind;
 
         public abstract Value DefaultValue { get; }
 
@@ -15,6 +16,15 @@ namespace SmartPlaylist.Domain.Operator
         public virtual bool CanCompare(Value itemValue, Value value)
         {
             return !value.IsNone && itemValue.IsType(value.GetType());
+        }
+
+        public OperatorDto ToDto()
+        {
+            return new OperatorDto
+            {
+                Name = Name,
+                Type = Type
+            };
         }
     }
 

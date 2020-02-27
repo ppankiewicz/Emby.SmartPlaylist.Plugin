@@ -20,7 +20,7 @@ export const UpdateTypes = [
     'ShuffleMonthly',
 ] as const;
 
-export const LimitOrderByValues = ['Random'] as const;
+export const LimitOrderByValues = ['Random', 'Name'] as const;
 
 export const defaultString: StringValue = {
     kind: 'string',
@@ -88,11 +88,12 @@ export const defaultRuleCriteriaDefinition: RuleCriteriaDefinition = {
 };
 
 export const randomLimitOrderBy: LimitOrderBy = 'Random';
+export const nameLimitOrderBy: LimitOrderBy = 'Name';
 
 export const deafultPlaylistLimit: PlaylistLimit = {
     hasLimit: false,
     maxItems: 0,
-    orderBy: randomLimitOrderBy,
+    orderBy: nameLimitOrderBy,
 };
 
 export const defaultUpdateType: UpdateType = 'Live';

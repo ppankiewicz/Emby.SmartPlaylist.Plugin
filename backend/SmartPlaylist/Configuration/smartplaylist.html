@@ -48,7 +48,7 @@
 
                     ApiClient.getPluginConfiguration("3C96F5BC-4182-4B86-B05D-F730F2611E45").then(function (config) {
 
-                        const version = '&' + ApiClient.serverVersion() + '&' + config.Version;
+                        const version = '&' + config.Version;
 
                         dynamicallyLoadStyle('./ConfigurationPage?name=smartplaylist.css'+version);
                         dynamicallyLoadScript('./ConfigurationPage?name=smartplaylist.js'+version);

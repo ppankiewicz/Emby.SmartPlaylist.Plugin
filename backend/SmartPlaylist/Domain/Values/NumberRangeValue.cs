@@ -2,26 +2,26 @@
 {
     public class NumberRangeValue : Value
     {
-        public static NumberRangeValue Default = new NumberRangeValue(0, 0);
+        public static readonly NumberRangeValue Default = new NumberRangeValue(0, 0);
 
-        public NumberRangeValue(int from, int to)
+        public NumberRangeValue(float from, float to)
         {
             From = from;
             To = to;
         }
 
         public override string Kind => "numberRange";
-        public int From { get; }
-        public int To { get; }
+        public float From { get; }
+        public float To { get; }
 
-        public static NumberRangeValue Create(int from, int to)
+        public static NumberRangeValue Create(float from, float to)
         {
             return new NumberRangeValue(from, to);
         }
 
         protected bool Equals(NumberRangeValue other)
         {
-            return From == other.From && To == other.To;
+            return From.Equals(other.From) && To.Equals(other.To);
         }
 
         public override bool Equals(object obj)
@@ -36,7 +36,7 @@
         {
             unchecked
             {
-                return (From * 397) ^ To;
+                return (From.GetHashCode() * 397) ^ To.GetHashCode();
             }
         }
 
