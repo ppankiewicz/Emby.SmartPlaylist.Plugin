@@ -54,7 +54,7 @@ namespace SmartPlaylist.Handlers.CommandHandlers
         private async Task UpdateSmartPlaylistsWithNewItemsAsync(BaseItem[] items,
             Domain.SmartPlaylist[] smartPlaylists)
         {
-            for (var i = 0; i < (int) Math.Ceiling(smartPlaylists.Length / (decimal) 3); i++)
+            for (var i = 0; i < (int) Math.Ceiling(smartPlaylists.Length / (decimal) Const.ForEachMaxDegreeOfParallelism); i++)
             {
                 var tasks = smartPlaylists.Take(Const.ForEachMaxDegreeOfParallelism)
                     .Skip(i * Const.ForEachMaxDegreeOfParallelism).Select(x => GetTasks(x, items));

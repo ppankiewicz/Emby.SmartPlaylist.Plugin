@@ -24,7 +24,7 @@ namespace SmartPlaylist.Services
                 RemoveFromPlaylist(libraryUserPlaylist, playlistItems);
                 AddToPlaylist(libraryUserPlaylist, newItems);
             }
-            else
+            else if(newItems.Any())
             {
                 await _playlistManager.CreatePlaylist(new PlaylistCreationRequest
                 {
