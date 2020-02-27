@@ -38,10 +38,16 @@ namespace SmartPlaylist.Domain.CriteriaDefinition
 
     public class ListValueDefinitionType : CriteriaDefinitionType
     {
-        public static readonly CriteriaDefinitionType Instance = new ListValueDefinitionType();
+        private readonly ListValue _defaultListValue;
+
+        public ListValueDefinitionType(ListValue defaultListValue)
+        {
+            _defaultListValue = defaultListValue;
+        }
+
         public override string Name => ListValue.Default.Kind;
 
-        public override Operator.Operator[] Operators => DefinedOperators.ListValueOperators;
+        public override Operator.Operator[] Operators => OperatorsFactory.CreateListValueOperators(_defaultListValue);
     }
 
     public class BoolValueDefinitionType : CriteriaDefinitionType
@@ -50,5 +56,20 @@ namespace SmartPlaylist.Domain.CriteriaDefinition
         public override string Name => BoolValue.Default.Kind;
 
         public override Operator.Operator[] Operators => DefinedOperators.BoolValueOperators;
+    }
+
+
+    public class ComparableListValueDefinitionType : CriteriaDefinitionType
+    {
+        private readonly ListValue _defaultListValue;
+
+        public ComparableListValueDefinitionType(ListValue defaultListValue)
+        {
+            _defaultListValue = defaultListValue;
+        }
+
+        public override string Name => ListValue.Default.Kind;
+
+        public override Operator.Operator[] Operators => OperatorsFactory.CreateComparableListValueOperators(_defaultListValue);
     }
 }

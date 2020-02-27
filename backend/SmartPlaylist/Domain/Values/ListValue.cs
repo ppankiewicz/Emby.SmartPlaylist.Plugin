@@ -6,10 +6,13 @@ namespace SmartPlaylist.Domain.Values
     {
         public static readonly ListValue Default = new ListValue(string.Empty);
 
-        public ListValue(string value)
+        public ListValue(string value, float numValue = 0)
         {
+            NumValue = numValue;
             Value = value;
         }
+
+        public float NumValue { get; }
 
         public override string Kind => "listValue";
 
@@ -48,9 +51,16 @@ namespace SmartPlaylist.Domain.Values
             return !Equals(left, right);
         }
 
-        public static ListValue Create(string value)
+
+        public static ListValue Create(string value, float numValue =0)
         {
-            return new ListValue(value);
+            return new ListValue(value, numValue);
+        }
+
+
+        public bool IsBetween(ListValueRange range)
+        {
+            return NumValue <= range.To.NumValue && NumValue >= range.From.NumValue;
         }
     }
 }

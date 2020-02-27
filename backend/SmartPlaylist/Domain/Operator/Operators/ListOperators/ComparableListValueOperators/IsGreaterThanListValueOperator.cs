@@ -1,19 +1,20 @@
 ﻿using SmartPlaylist.Domain.Values;
 
-namespace SmartPlaylist.Domain.Operator.Operators.ListOperators
+namespace SmartPlaylist.Domain.Operator.Operators.ListOperators.ComparableListValueOperators
 {
-    public class IsListValueOperator : OperatorGen<ListValue, ListValue>
+    public class IsGreaterThanListValueOperator : OperatorGen<ListValue, ListValue>
     {
-        public IsListValueOperator(): this(ListValue.Default)
+        public IsGreaterThanListValueOperator() : this(ListValue.Default)
         {
         }
 
-        public IsListValueOperator(ListValue defaultListValue)
+        public IsGreaterThanListValueOperator(ListValue defaultListValue)
         {
             DefaultValue = defaultListValue;
         }
 
-        public override string Name => "is";
+        public override string Name => "is greater than";
+
         public override Value DefaultValue { get; }
 
         public override bool Compare(Value itemValue, Value value)
@@ -23,7 +24,7 @@ namespace SmartPlaylist.Domain.Operator.Operators.ListOperators
 
         public override bool Compare(ListValue itemValue, ListValue value)
         {
-            return itemValue?.Equals(value) ?? false;
+            return itemValue.NumValue > value.NumValue;
         }
     }
 }

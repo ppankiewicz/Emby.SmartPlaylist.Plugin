@@ -21,6 +21,7 @@ export const ListValueInput: React.FC<StringValueInputProps> = props => {
             onChange={newVal =>
                 onChange({
                     ...listValue,
+                    ...props.values.find(x => x.value === newVal),
                     value: newVal,
                 })
             }

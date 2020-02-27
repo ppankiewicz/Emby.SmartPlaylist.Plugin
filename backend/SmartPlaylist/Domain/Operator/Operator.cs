@@ -7,7 +7,7 @@ namespace SmartPlaylist.Domain.Operator
     {
         public abstract string Name { get; }
 
-        public string Type => DefaultValue.Kind;
+        public virtual string Type => DefaultValue.Kind;
 
         public abstract Value DefaultValue { get; }
 
