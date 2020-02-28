@@ -11,7 +11,10 @@ namespace SmartPlaylist.Domain.CriteriaDefinition.CriteriaDefinitions
 
         public override Value GetValue(UserItem item)
         {
-            return DateValue.Create(ReleaseDateGetter.Get(item.Item));
+            var releaseDate = ReleaseDateGetter.Get(item.Item);
+            if (releaseDate.HasValue) return DateValue.Create(releaseDate.Value);
+
+            return Value.None;
         }
     }
 }

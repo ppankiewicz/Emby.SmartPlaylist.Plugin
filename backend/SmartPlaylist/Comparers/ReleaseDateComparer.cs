@@ -14,7 +14,7 @@ namespace SmartPlaylist.Comparers
 
         private DateTimeOffset GetReleaseDate(BaseItem baseItem)
         {
-            return baseItem.PremiereDate.GetValueOrDefault(ReleaseDateGetter.Get(baseItem));
+            return baseItem.PremiereDate.GetValueOrDefault(ReleaseDateGetter.Get(baseItem) ?? DateTimeOffset.MinValue);
         }
     }
 }
