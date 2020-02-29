@@ -11,7 +11,7 @@ namespace SmartPlaylist.Domain.CriteriaDefinition
 
     public class StringDefinitionType : CriteriaDefinitionType
     {
-        public static StringDefinitionType Instance = new StringDefinitionType();
+        public static readonly StringDefinitionType Instance = new StringDefinitionType();
 
         public override string Name => StringValue.Default.Kind;
 
@@ -20,7 +20,7 @@ namespace SmartPlaylist.Domain.CriteriaDefinition
 
     public class NumberDefinitionType : CriteriaDefinitionType
     {
-        public static NumberDefinitionType Instance = new NumberDefinitionType();
+        public static readonly NumberDefinitionType Instance = new NumberDefinitionType();
         public override string Name => NumberValue.Default.Kind;
 
         public override Operator.Operator[] Operators => DefinedOperators.NumberOperators;
@@ -29,7 +29,7 @@ namespace SmartPlaylist.Domain.CriteriaDefinition
 
     public class DateDefinitionType : CriteriaDefinitionType
     {
-        public static DateDefinitionType Instance = new DateDefinitionType();
+        public static readonly DateDefinitionType Instance = new DateDefinitionType();
 
         public override string Name => DateValue.Default.Kind;
 
@@ -38,17 +38,38 @@ namespace SmartPlaylist.Domain.CriteriaDefinition
 
     public class ListValueDefinitionType : CriteriaDefinitionType
     {
-        public static CriteriaDefinitionType Instance = new ListValueDefinitionType();
+        private readonly ListValue _defaultListValue;
+
+        public ListValueDefinitionType(ListValue defaultListValue)
+        {
+            _defaultListValue = defaultListValue;
+        }
+
         public override string Name => ListValue.Default.Kind;
 
-        public override Operator.Operator[] Operators => DefinedOperators.ListValueOperators;
+        public override Operator.Operator[] Operators => OperatorsFactory.CreateListValueOperators(_defaultListValue);
     }
 
     public class BoolValueDefinitionType : CriteriaDefinitionType
     {
-        public static CriteriaDefinitionType Instance = new BoolValueDefinitionType();
+        public static readonly CriteriaDefinitionType Instance = new BoolValueDefinitionType();
         public override string Name => BoolValue.Default.Kind;
 
         public override Operator.Operator[] Operators => DefinedOperators.BoolValueOperators;
+    }
+
+
+    public class ComparableListValueDefinitionType : CriteriaDefinitionType
+    {
+        private readonly ListValue _defaultListValue;
+
+        public ComparableListValueDefinitionType(ListValue defaultListValue)
+        {
+            _defaultListValue = defaultListValue;
+        }
+
+        public override string Name => ListValue.Default.Kind;
+
+        public override Operator.Operator[] Operators => OperatorsFactory.CreateComparableListValueOperators(_defaultListValue);
     }
 }

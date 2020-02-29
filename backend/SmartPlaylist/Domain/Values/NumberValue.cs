@@ -2,38 +2,38 @@
 {
     public class NumberValue : Value
     {
-        public static NumberValue Default = new NumberValue(0);
+        public static readonly NumberValue Default = new NumberValue(0);
 
-        public NumberValue(int value)
+        public NumberValue(float value)
         {
             Value = value;
         }
 
         public override string Kind => "number";
 
-        public int Value { get; }
+        public float Value { get; }
 
-        public static NumberValue Create(int value)
+        public static NumberValue Create(float value)
         {
             return new NumberValue(value);
         }
 
         protected bool Equals(NumberValue other)
         {
-            return Value == other.Value;
+            return Value.Equals(other.Value);
         }
 
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != GetType()) return false;
+            if (obj.GetType() != this.GetType()) return false;
             return Equals((NumberValue) obj);
         }
 
         public override int GetHashCode()
         {
-            return Value;
+            return Value.GetHashCode();
         }
 
         public static bool operator ==(NumberValue left, NumberValue right)

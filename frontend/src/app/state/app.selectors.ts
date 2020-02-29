@@ -1,5 +1,10 @@
 import { Playlist } from '~/app/types/playlist';
-import { RuleCriteriaDefinition, RuleCriteriaOperator } from '~/app/types/rule';
+import {
+    RuleCriteriaDefinition,
+    RuleCriteriaOperator,
+    ListValueRange,
+    ListValue,
+} from '~/app/types/rule';
 import { AppPlaylistState, AppState } from '~/app/state/app.reducer';
 import { AppData, AppPlaylist } from '~/app/types/appData';
 import { TreeViewData } from '~/common/components/TreeView/types/tree';
@@ -29,12 +34,6 @@ export const createAppSelectors = (state: AppState): AppSelectors => {
         getRuleCriteriaOperators: (criteriaName: string): RuleCriteriaOperator[] => {
             const ruleCritDef = state.rulesCriteriaDefinitions.find(x => x.name === criteriaName);
             if (ruleCritDef && ruleCritDef.type.operators) {
-                if (ruleCritDef.type.name === 'listValue') {
-                    ruleCritDef.type.operators.forEach(
-                        x => (x.defaultValue = ruleCritDef.values[0]),
-                    );
-                }
-
                 return ruleCritDef.type.operators;
             } else {
                 return [];

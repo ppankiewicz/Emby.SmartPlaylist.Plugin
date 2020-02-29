@@ -19,6 +19,7 @@ namespace SmartPlaylist.Extensions
         {
             return assembly
                 .FindDerivedTypes<TBase>()
+                .Where(x=> x.GetConstructor(Type.EmptyTypes) != null)
                 .Select(Activator.CreateInstance)
                 .OfType<TBase>()
                 .ToArray();

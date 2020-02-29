@@ -39,7 +39,8 @@ namespace SmartPlaylist.Handlers.CommandHandlers
             UpdateSmartPlaylistsWithAllUserItems(smartPlaylists.Except(smartPlaylistToUpdateWithNewItems));
 
             if (smartPlaylistToUpdateWithNewItems.Any())
-                await UpdateSmartPlaylistsWithNewItemsAsync(message.Items, smartPlaylistToUpdateWithNewItems);
+                await UpdateSmartPlaylistsWithNewItemsAsync(message.Items, smartPlaylistToUpdateWithNewItems)
+                    .ConfigureAwait(false);
         }
 
         private static Domain.SmartPlaylist[] GetSmartPlaylistToUpdateWithNewItems(
@@ -53,31 +54,25 @@ namespace SmartPlaylist.Handlers.CommandHandlers
         private async Task UpdateSmartPlaylistsWithNewItemsAsync(BaseItem[] items,
             Domain.SmartPlaylist[] smartPlaylists)
         {
-            var playlists = await _playlistRepository
-                .GetOrCreateUserPlaylistsAsync(GroupPlaylistNamesByUser(smartPlaylists)).ConfigureAwait(false);
-
-            Parallel.ForEach(smartPlaylists, new ParallelOptions
+            for (var i = 0; i < (int) Math.Ceiling(smartPlaylists.Length / (decimal) Const.ForEachMaxDegreeOfParallelism); i++)
             {
-                MaxDegreeOfParallelism = Const.ForEachMaxDegreeOfParallelism
-            }, smartPlaylist =>
-            {
-                var playlist = playlists.SingleByName(smartPlaylist.UserId, smartPlaylist.Name);
-
-                var newItems = smartPlaylist.FilterPlaylistItems(playlist, items).ToArray();
-                _playlistItemsUpdater.Update(playlist, newItems);
-            });
+                var tasks = smartPlaylists.Take(Const.ForEachMaxDegreeOfParallelism)
+                    .Skip(i * Const.ForEachMaxDegreeOfParallelism).Select(x => GetTasks(x, items));
+                await Task.WhenAll(tasks).ConfigureAwait(false);
+            }
         }
+
+        private async Task GetTasks(Domain.SmartPlaylist smartPlaylist, BaseItem[] items)
+        {
+            var playlist = _playlistRepository.GetUserPlaylist(smartPlaylist.UserId, smartPlaylist.Name);
+            var newItems = smartPlaylist.FilterPlaylistItems(playlist, items).ToArray();
+            await _playlistItemsUpdater.UpdateAsync(playlist, newItems).ConfigureAwait(false);
+        }
+
 
         private void UpdateSmartPlaylistsWithAllUserItems(IEnumerable<Domain.SmartPlaylist> smartPlaylists)
         {
             smartPlaylists.ToList().ForEach(x => _messageBus.Publish(new UpdateSmartPlaylistCommand(x.Id)));
-        }
-
-        private static Dictionary<Guid, string[]> GroupPlaylistNamesByUser(
-            IEnumerable<Domain.SmartPlaylist> smartPlaylists)
-        {
-            return smartPlaylists.GroupBy(x => x.UserId, y => y.Name)
-                .ToDictionary(x => x.Key, y => y.ToArray());
         }
     }
 }

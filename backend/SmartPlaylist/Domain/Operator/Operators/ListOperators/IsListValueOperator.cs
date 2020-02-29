@@ -4,8 +4,17 @@ namespace SmartPlaylist.Domain.Operator.Operators.ListOperators
 {
     public class IsListValueOperator : OperatorGen<ListValue, ListValue>
     {
+        public IsListValueOperator(): this(ListValue.Default)
+        {
+        }
+
+        public IsListValueOperator(ListValue defaultListValue)
+        {
+            DefaultValue = defaultListValue;
+        }
+
         public override string Name => "is";
-        public override Value DefaultValue => ListValue.Default;
+        public override Value DefaultValue { get; }
 
         public override bool Compare(Value itemValue, Value value)
         {

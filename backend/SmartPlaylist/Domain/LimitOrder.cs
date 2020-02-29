@@ -1,17 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using MediaBrowser.Controller.Entities;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Querying;
+using SmartPlaylist.Comparers;
 using SmartPlaylist.Extensions;
 
 namespace SmartPlaylist.Domain
 {
     public class SmartPlaylistLimit
     {
-        public static SmartPlaylistLimit None => new SmartPlaylistLimit
+        public static readonly SmartPlaylistLimit None = new SmartPlaylistLimit
         {
             MaxItems = 100000,
-            OrderBy = new RandomLimitOrder()
+            OrderBy = new NoneLimitOrder()
         };
 
         public int MaxItems { get; set; }
@@ -21,11 +24,17 @@ namespace SmartPlaylist.Domain
         public bool HasLimit => this != None;
     }
 
+    public class NoneLimitOrder : LimitOrder
+    {
+        public override string Name => "None";
+    }
+
     public static class DefinedLimitOrders
     {
-        public static LimitOrder[] All = typeof(LimitOrder).Assembly.FindAndCreateDerivedTypes<LimitOrder>().ToArray();
+        public static readonly LimitOrder[] All = typeof(LimitOrder).Assembly.FindAndCreateDerivedTypes<LimitOrder>()
+            .Where(x => x.GetType() != SmartPlaylistLimit.None.OrderBy.GetType()).ToArray();
 
-        public static string[] AllNames = All.Select(x => x.Name).ToArray();
+        public static readonly string[] AllNames = All.Select(x => x.Name).ToArray();
     }
 
     public abstract class LimitOrder
@@ -33,6 +42,11 @@ namespace SmartPlaylist.Domain
         public abstract string Name { get; }
 
         public virtual ValueTuple<string, SortOrder>[] OrderBy => new (string, SortOrder)[0];
+
+        public virtual IEnumerable<BaseItem> Order(IEnumerable<BaseItem> items)
+        {
+            return items;
+        }
     }
 
     public class RandomLimitOrder : LimitOrder
@@ -41,6 +55,11 @@ namespace SmartPlaylist.Domain
 
         public override (string, SortOrder)[] OrderBy => new (string, SortOrder)[]
             {(ItemSortBy.Random, SortOrder.Ascending)};
+
+        public override IEnumerable<BaseItem> Order(IEnumerable<BaseItem> items)
+        {
+            return items.Shuffle();
+        }
     }
 
     public class AlbumLimitOrder : LimitOrder
@@ -49,6 +68,11 @@ namespace SmartPlaylist.Domain
 
         public override (string, SortOrder)[] OrderBy =>
             new (string, SortOrder)[] {(ItemSortBy.Album, SortOrder.Ascending)};
+
+        public override IEnumerable<BaseItem> Order(IEnumerable<BaseItem> items)
+        {
+            return items.OrderBy(x => x.Album);
+        }
     }
 
 
@@ -58,6 +82,11 @@ namespace SmartPlaylist.Domain
 
         public override (string, SortOrder)[] OrderBy => new (string, SortOrder)[]
             {(ItemSortBy.Artist, SortOrder.Ascending)};
+
+        public override IEnumerable<BaseItem> Order(IEnumerable<BaseItem> items)
+        {
+            return items.OrderBy(x => x, new ArtistsComparer(a => a.Artists));
+        }
     }
 
     public class AlbumArtistLimitOrder : LimitOrder
@@ -66,6 +95,11 @@ namespace SmartPlaylist.Domain
 
         public override (string, SortOrder)[] OrderBy => new (string, SortOrder)[]
             {(ItemSortBy.AlbumArtist, SortOrder.Ascending)};
+
+        public override IEnumerable<BaseItem> Order(IEnumerable<BaseItem> items)
+        {
+            return items.OrderBy(x => x, new ArtistsComparer(a => a.AlbumArtists));
+        }
     }
 
     public class MostFavoriteLimitOrder : LimitOrder
@@ -74,6 +108,11 @@ namespace SmartPlaylist.Domain
 
         public override (string, SortOrder)[] OrderBy => new (string, SortOrder)[]
             {(ItemSortBy.IsFavorite, SortOrder.Descending)};
+
+        public override IEnumerable<BaseItem> Order(IEnumerable<BaseItem> items)
+        {
+            return items.OrderByDescending(x => x.IsFavorite);
+        }
     }
 
     public class LessFavoriteLimitOrder : LimitOrder
@@ -82,6 +121,11 @@ namespace SmartPlaylist.Domain
 
         public override (string, SortOrder)[] OrderBy => new (string, SortOrder)[]
             {(ItemSortBy.IsFavorite, SortOrder.Ascending)};
+
+        public override IEnumerable<BaseItem> Order(IEnumerable<BaseItem> items)
+        {
+            return items.OrderBy(x => x.IsFavorite);
+        }
     }
 
 
@@ -91,6 +135,11 @@ namespace SmartPlaylist.Domain
 
         public override (string, SortOrder)[] OrderBy => new (string, SortOrder)[]
             {(ItemSortBy.DateCreated, SortOrder.Descending)};
+
+        public override IEnumerable<BaseItem> Order(IEnumerable<BaseItem> items)
+        {
+            return items.OrderByDescending(x => x.DateCreated);
+        }
     }
 
     public class AddedDateAscLimitOrder : LimitOrder
@@ -99,6 +148,11 @@ namespace SmartPlaylist.Domain
 
         public override (string, SortOrder)[] OrderBy => new (string, SortOrder)[]
             {(ItemSortBy.DateCreated, SortOrder.Ascending)};
+
+        public override IEnumerable<BaseItem> Order(IEnumerable<BaseItem> items)
+        {
+            return items.OrderBy(x => x.DateCreated);
+        }
     }
 
     public class MostPlayedLimitOrder : LimitOrder
@@ -107,6 +161,11 @@ namespace SmartPlaylist.Domain
 
         public override (string, SortOrder)[] OrderBy => new (string, SortOrder)[]
             {(ItemSortBy.PlayCount, SortOrder.Descending)};
+
+        public override IEnumerable<BaseItem> Order(IEnumerable<BaseItem> items)
+        {
+            return items.OrderByDescending(x => x.PlayCount);
+        }
     }
 
     public class LeastPlayedLimitOrder : LimitOrder
@@ -115,6 +174,11 @@ namespace SmartPlaylist.Domain
 
         public override (string, SortOrder)[] OrderBy => new (string, SortOrder)[]
             {(ItemSortBy.PlayCount, SortOrder.Ascending)};
+
+        public override IEnumerable<BaseItem> Order(IEnumerable<BaseItem> items)
+        {
+            return items.OrderBy(x => x.PlayCount);
+        }
     }
 
     public class PlayedDateDescLimitOrder : LimitOrder
@@ -123,6 +187,11 @@ namespace SmartPlaylist.Domain
 
         public override (string, SortOrder)[] OrderBy => new (string, SortOrder)[]
             {(ItemSortBy.DatePlayed, SortOrder.Descending)};
+
+        public override IEnumerable<BaseItem> Order(IEnumerable<BaseItem> items)
+        {
+            return items.OrderByDescending(x => x.LastPlayedDate);
+        }
     }
 
     public class PlayedDateAscLimitOrder : LimitOrder
@@ -131,6 +200,11 @@ namespace SmartPlaylist.Domain
 
         public override (string, SortOrder)[] OrderBy => new (string, SortOrder)[]
             {(ItemSortBy.DatePlayed, SortOrder.Ascending)};
+
+        public override IEnumerable<BaseItem> Order(IEnumerable<BaseItem> items)
+        {
+            return items.OrderBy(x => x.LastPlayedDate);
+        }
     }
 
     public class NameLimitOrder : LimitOrder
@@ -139,5 +213,154 @@ namespace SmartPlaylist.Domain
 
         public override (string, SortOrder)[] OrderBy =>
             new (string, SortOrder)[] {(ItemSortBy.Name, SortOrder.Ascending)};
+
+        public override IEnumerable<BaseItem> Order(IEnumerable<BaseItem> items)
+        {
+            return items.OrderBy(x => x.Name);
+        }
     }
+
+    public class EpisodeLimitOrder : LimitOrder
+    {
+        public override string Name => "Episode";
+
+        public override (string, SortOrder)[] OrderBy =>
+            new (string, SortOrder)[] {(ItemSortBy.AiredEpisodeOrder, SortOrder.Ascending)};
+
+        public override IEnumerable<BaseItem> Order(IEnumerable<BaseItem> items)
+        {
+            return items.OrderBy(x => x, new EpisodeComparer());
+        }
+    }
+
+    public class SortNameLimitOrder : LimitOrder
+    {
+        public override string Name => "SortName asc";
+
+        public override (string, SortOrder)[] OrderBy =>
+            new (string, SortOrder)[] {(ItemSortBy.SortName, SortOrder.Ascending)};
+
+        public override IEnumerable<BaseItem> Order(IEnumerable<BaseItem> items)
+        {
+            return items.OrderBy(x => x.SortName);
+        }
+    }
+
+    public class SortNameDescLimitOrder : LimitOrder
+    {
+        public override string Name => "SortName desc";
+
+        public override (string, SortOrder)[] OrderBy =>
+            new (string, SortOrder)[] {(ItemSortBy.SortName, SortOrder.Descending)};
+
+        public override IEnumerable<BaseItem> Order(IEnumerable<BaseItem> items)
+        {
+            return items.OrderByDescending(x => x.SortName);
+        }
+    }
+
+    public class ReleaseDateLimitOrder : LimitOrder
+    {
+        public override string Name => "Release date asc";
+
+        public override (string, SortOrder)[] OrderBy =>
+            new (string, SortOrder)[] {(ItemSortBy.PremiereDate, SortOrder.Ascending)};
+
+        public override IEnumerable<BaseItem> Order(IEnumerable<BaseItem> items)
+        {
+            return items.OrderBy(x => x, new ReleaseDateComparer());
+        }
+    }
+
+    public class ReleaseDateDescLimitOrder : LimitOrder
+    {
+        public override string Name => "Release date desc";
+
+        public override (string, SortOrder)[] OrderBy =>
+            new (string, SortOrder)[] {(ItemSortBy.PremiereDate, SortOrder.Descending)};
+
+        public override IEnumerable<BaseItem> Order(IEnumerable<BaseItem> items)
+        {
+            return items.OrderByDescending(x => x, new ReleaseDateComparer());
+        }
+    }
+
+    public class RuntimeLimitOrder : LimitOrder
+    {
+        public override string Name => "Runtime asc";
+
+        public override (string, SortOrder)[] OrderBy =>
+            new (string, SortOrder)[] {(ItemSortBy.Runtime, SortOrder.Ascending)};
+
+        public override IEnumerable<BaseItem> Order(IEnumerable<BaseItem> items)
+        {
+            return items.OrderBy(x => x.RunTimeTicks);
+        }
+    }
+
+    public class RuntimeDescLimitOrder : LimitOrder
+    {
+        public override string Name => "Runtime desc";
+
+        public override (string, SortOrder)[] OrderBy =>
+            new (string, SortOrder)[] {(ItemSortBy.Runtime, SortOrder.Descending)};
+
+        public override IEnumerable<BaseItem> Order(IEnumerable<BaseItem> items)
+        {
+            return items.OrderByDescending(x => x.RunTimeTicks);
+        }
+    }
+
+    public class CommunityRatingLimitOrder : LimitOrder
+    {
+        public override string Name => "Community rating asc";
+
+        public override (string, SortOrder)[] OrderBy =>
+            new (string, SortOrder)[] { (ItemSortBy.CommunityRating, SortOrder.Descending) };
+
+        public override IEnumerable<BaseItem> Order(IEnumerable<BaseItem> items)
+        {
+            return items.OrderBy(x => x.CommunityRating);
+        }
+    }
+
+    public class CommunityRatingDescLimitOrder : LimitOrder
+    {
+        public override string Name => "Community rating desc";
+
+        public override (string, SortOrder)[] OrderBy =>
+            new (string, SortOrder)[] { (ItemSortBy.CommunityRating, SortOrder.Descending) };
+
+        public override IEnumerable<BaseItem> Order(IEnumerable<BaseItem> items)
+        {
+            return items.OrderByDescending(x => x.CommunityRating);
+        }
+    }
+
+    public class ParentalRatingLimitOrder : LimitOrder
+    {
+        public override string Name => "Parental rating asc";
+
+        public override (string, SortOrder)[] OrderBy =>
+            new (string, SortOrder)[] { (ItemSortBy.OfficialRating, SortOrder.Descending) };
+
+        public override IEnumerable<BaseItem> Order(IEnumerable<BaseItem> items)
+        {
+            return items.OrderBy(x => x.InheritedParentalRatingValue);
+        }
+    }
+
+    public class ParentalRatingDescLimitOrder : LimitOrder
+    {
+        public override string Name => "Parental rating desc";
+
+        public override (string, SortOrder)[] OrderBy =>
+            new (string, SortOrder)[] { (ItemSortBy.OfficialRating, SortOrder.Descending) };
+
+        public override IEnumerable<BaseItem> Order(IEnumerable<BaseItem> items)
+        {
+            return items.OrderByDescending(x => x.InheritedParentalRatingValue);
+        }
+    }
+
 }

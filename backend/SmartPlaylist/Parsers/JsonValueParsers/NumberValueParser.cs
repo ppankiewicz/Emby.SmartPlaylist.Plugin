@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Globalization;
+using System.Text.RegularExpressions;
 using SmartPlaylist.Domain.Values;
 
 namespace SmartPlaylist.Parsers.JsonValueParsers
@@ -11,7 +12,8 @@ namespace SmartPlaylist.Parsers.JsonValueParsers
         {
             val = null;
             var match = ParseRegEx.Match(value);
-            if (match.Success && int.TryParse(match.Groups[1].Value, out var number))
+            if (match.Success && float.TryParse(match.Groups[1].Value, NumberStyles.Any, CultureInfo.InvariantCulture,
+                    out var number))
             {
                 val = NumberValue.Create(number);
                 return true;

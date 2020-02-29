@@ -19,6 +19,11 @@ Function Find-MsBuild([int] $MaxVersion = 2017)
     throw "Yikes - Unable to find msbuild"
 }
 
+$buildConfig = $args[0]
+
+if(!$buildConfig){
+	$buildConfig = "Debug"
+}
 
 $forntendDir ="$PSScriptRoot\frontend"
 $backednDir = "$PSScriptRoot\backend"
@@ -38,7 +43,7 @@ if (!$exitCode) {
 
 Push-Location $backednDir
 
-& $MsBuildExe SmartPlaylist.sln /t:Build /p:Configuration=Release
+& $MsBuildExe SmartPlaylist.sln /t:Build /p:Configuration=$buildConfig
 $exitCode = $?
 
 Pop-Location

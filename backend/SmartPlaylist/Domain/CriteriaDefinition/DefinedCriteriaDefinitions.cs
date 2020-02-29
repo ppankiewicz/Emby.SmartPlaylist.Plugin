@@ -5,7 +5,7 @@ namespace SmartPlaylist.Domain.CriteriaDefinition
 {
     public static class DefinedCriteriaDefinitions
     {
-        public static CriteriaDefinition[] All = typeof(CriteriaDefinition).Assembly
+        public static readonly CriteriaDefinition[] All = typeof(CriteriaDefinition).Assembly
             .FindAndCreateDerivedTypes<CriteriaDefinition>().ToArray();
     }
 }

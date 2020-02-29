@@ -6,6 +6,7 @@ using MediaBrowser.Common.Plugins;
 using MediaBrowser.Controller;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Playlists;
+using MediaBrowser.Controller.Session;
 using MediaBrowser.Model.Drawing;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Plugins;
@@ -14,6 +15,7 @@ using SmartPlaylist.Configuration;
 using SmartPlaylist.Handlers.CommandHandlers;
 using SmartPlaylist.Infrastructure.MesssageBus;
 using SmartPlaylist.Infrastructure.MesssageBus.Decorators;
+using SmartPlaylist.Infrastructure.MesssageBus.Decorators.DebugDecorators;
 using SmartPlaylist.Services;
 using SmartPlaylist.Services.SmartPlaylist;
 
@@ -22,23 +24,26 @@ namespace SmartPlaylist
     public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages, IHasThumbImage
     {
         private readonly ILogger _logger;
+        private readonly ISessionManager _sessionManager;
 
         public Plugin(IApplicationPaths applicationPaths, IXmlSerializer xmlSerializer,
             IPlaylistManager playlistManager,
             ILibraryManager libraryManager,
             ILogger logger, IUserManager userManager, IJsonSerializer jsonSerializer,
-            IServerApplicationPaths serverApplicationPaths)
+            IServerApplicationPaths serverApplicationPaths, ISessionManager sessionManager)
             : base(applicationPaths, xmlSerializer)
         {
             _logger = logger;
+            _sessionManager = sessionManager;
             Instance = this;
             var smartPlaylistFileSystem =
                 new EnsureBaseDirSmartPlaylistFileSystemDecorator(new SmartPlaylistFileSystem(serverApplicationPaths));
             var smartPlaylistStore =
-                new CacheableSmartPlaylistStore(new SmartPlaylistStore(jsonSerializer, smartPlaylistFileSystem));
+                new CacheableSmartPlaylistStore(
+                    new CleanupOldCriteriaDecorator(new SmartPlaylistStore(jsonSerializer, smartPlaylistFileSystem)));
             var userItemsProvider = new UserItemsProvider(libraryManager);
             var smartPlaylistProvider = new SmartPlaylistProvider(smartPlaylistStore);
-            var playlistRepository = new PlaylistRepository(userManager, libraryManager, playlistManager);
+            var playlistRepository = new PlaylistRepository(userManager, libraryManager);
             var playlistItemsUpdater = new PlaylistItemsUpdater(playlistManager);
 
             MessageBus = new MessageBus();
@@ -116,7 +121,15 @@ namespace SmartPlaylist
 
         private IMessageHandlerAsync<T> Decorate<T>(IMessageHandlerAsync<T> messageHandler) where T : IMessage
         {
+#if DEBUG
+            return new SuppressAsyncExceptionDecorator<T>(
+                new DebugShowErrorMessageDecorator<T>(
+                    new DebugShowDurationMessageDecorator<T>(messageHandler, _sessionManager), _sessionManager),
+                _logger);
+#else
             return new SuppressAsyncExceptionDecorator<T>(messageHandler, _logger);
+
+#endif
         }
     }
 }

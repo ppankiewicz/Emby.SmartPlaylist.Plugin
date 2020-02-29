@@ -9,7 +9,7 @@ import {
 } from '~/app/types/rule';
 import { PlaylistAction, PlaylistState } from '~/app/state/playlist/playlist.reducer';
 import { isShuffleUpdateType, PlaylistBasicData } from '~/app/types/playlist';
-import { randomLimitOrderBy } from '~/app/app.const';
+import { nameLimitOrderBy, randomLimitOrderBy } from '~/app/app.const';
 import { AppContextProps } from '~/app/state/app.context';
 
 export type PlaylistActions = {
@@ -92,11 +92,18 @@ export const createPlaylistActions = (
             });
         },
         updateBasicData: (playlistBasicData: Partial<PlaylistBasicData>) => {
-            if (isShuffleUpdateType(playlistBasicData.updateType)) {
-                playlistBasicData.limit = {
-                    ...state.limit,
-                    orderBy: randomLimitOrderBy,
-                };
+            if (playlistBasicData.updateType) {
+                if (isShuffleUpdateType(playlistBasicData.updateType)) {
+                    playlistBasicData.limit = {
+                        ...state.limit,
+                        orderBy: randomLimitOrderBy,
+                    };
+                } else if (isShuffleUpdateType(state.updateType)) {
+                    playlistBasicData.limit = {
+                        ...state.limit,
+                        orderBy: nameLimitOrderBy,
+                    };
+                }
             }
 
             dispatcher({

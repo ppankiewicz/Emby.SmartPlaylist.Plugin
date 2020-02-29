@@ -9,7 +9,7 @@ namespace SmartPlaylist.Domain.CriteriaDefinition.CriteriaDefinitions
         private static readonly ListValue LikedListValue = ListValue.Create("Liked");
         private static readonly ListValue NoneListValue = ListValue.Create("None");
         public override string Name => "Favorite";
-        public override CriteriaDefinitionType Type => ListValueDefinitionType.Instance;
+        public override CriteriaDefinitionType Type => new ListValueDefinitionType(FavoriteListValue);
 
         public override Value[] Values
         {
