@@ -15,12 +15,12 @@ namespace SmartPlaylist.PerfLoggerDecorators.Services
             _decorated = decorated;
         }
 
-        public IEnumerable<BaseItem> GetItems(User user, string[] mediaTypes)
+        public IEnumerable<BaseItem> GetItems(User user, string[] itemTypes)
         {
             var items = new BaseItem[0];
             using (PerfLogger.Create("GetUserItems", () => new {userName = user.Name, itemsCount = items.Length}))
             {
-                items = _decorated.GetItems(user, mediaTypes).ToArray();
+                items = _decorated.GetItems(user, itemTypes).ToArray();
                 return items;
             }
         }
