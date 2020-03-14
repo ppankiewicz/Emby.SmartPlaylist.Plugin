@@ -22,9 +22,7 @@ namespace SmartPlaylist.Services
         public IEnumerable<BaseItem> GetItems(User user, string[] itemTypes)
         {
             var query = GetItemsQuery(user, itemTypes);
-            var items = _libraryManager.GetUserRootFolder().GetItems(query).Items;
-
-            return items;
+            return _libraryManager.GetUserRootFolder().GetItems(query).Items;
         }
 
         private static InternalItemsQuery GetItemsQuery(User user, string[] itemTypes)
