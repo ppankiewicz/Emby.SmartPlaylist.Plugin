@@ -1,6 +1,8 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using MediaBrowser.Controller.Entities;
 using SmartPlaylist.Handlers.Commands;
+using SmartPlaylist.Infrastructure;
 using SmartPlaylist.Infrastructure.MesssageBus;
 using SmartPlaylist.Services;
 using SmartPlaylist.Services.SmartPlaylist;
@@ -9,16 +11,16 @@ namespace SmartPlaylist.Handlers.CommandHandlers
 {
     public class UpdateSmartPlaylistCommandHandler : IMessageHandlerAsync<UpdateSmartPlaylistCommand>
     {
-        private readonly PlaylistItemsUpdater _playlistItemsUpdater;
-        private readonly PlaylistRepository _playlistRepository;
-        private readonly SmartPlaylistProvider _smartPlaylistProvider;
+        private readonly IPlaylistItemsUpdater _playlistItemsUpdater;
+        private readonly IPlaylistRepository _playlistRepository;
+        private readonly ISmartPlaylistProvider _smartPlaylistProvider;
         private readonly ISmartPlaylistStore _smartPlaylistStore;
 
-        private readonly UserItemsProvider _userItemsProvider;
+        private readonly IUserItemsProvider _userItemsProvider;
 
         public UpdateSmartPlaylistCommandHandler(
-            UserItemsProvider userItemsProvider, SmartPlaylistProvider smartPlaylistProvider,
-            PlaylistRepository playlistRepository, PlaylistItemsUpdater playlistItemsUpdater,
+            IUserItemsProvider userItemsProvider, ISmartPlaylistProvider smartPlaylistProvider,
+            IPlaylistRepository playlistRepository, IPlaylistItemsUpdater playlistItemsUpdater,
             ISmartPlaylistStore smartPlaylistStore)
         {
             _userItemsProvider = userItemsProvider;
@@ -32,10 +34,17 @@ namespace SmartPlaylist.Handlers.CommandHandlers
         {
             var smartPlaylist = await _smartPlaylistProvider.GetSmartPlaylistAsync(message.SmartPlaylistId)
                 .ConfigureAwait(false);
+
             var playlist = _playlistRepository.GetUserPlaylist(smartPlaylist.UserId, smartPlaylist.Name);
 
-            var items = _userItemsProvider.GetItems(playlist.User, Const.SupportedItemTypeNames);
-            var newItems = smartPlaylist.FilterPlaylistItems(playlist, items.ToArray()).ToArray();
+            var items = _userItemsProvider.GetItems(playlist.User, Const.SupportedItemTypeNames).ToArray();
+
+            BaseItem[] newItems;
+            using (PerfLogger.Create("FilterPlaylistItems",
+                () => new {playlistName = playlist.Name, itemsCount = items.Length}))
+            {
+                newItems = smartPlaylist.FilterPlaylistItems(playlist, items).ToArray();
+            }
 
             await _playlistItemsUpdater.UpdateAsync(playlist, newItems).ConfigureAwait(false);
 

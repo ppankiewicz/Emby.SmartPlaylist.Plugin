@@ -9,7 +9,12 @@ using MediaBrowser.Controller.Library;
 
 namespace SmartPlaylist.Services
 {
-    public class UserItemsProvider
+    public interface IUserItemsProvider
+    {
+        IEnumerable<BaseItem> GetItems(User user, string[] mediaTypes);
+    }
+
+    public class UserItemsProvider : IUserItemsProvider
     {
         private readonly ILibraryManager _libraryManager;
 
@@ -36,7 +41,7 @@ namespace SmartPlaylist.Services
             return items.OrderBy(x => x.Item1).SelectMany(x => x.Item2);
         }
 
-        public BaseItem[] GetItems(User user, string[] mediaTypes, int? limit = null, int? startIndex = null)
+        private BaseItem[] GetItems(User user, string[] mediaTypes, int? limit = null, int? startIndex = null)
         {
             var items = _libraryManager.GetUserRootFolder().GetItems(new InternalItemsQuery(user)
             {
@@ -50,7 +55,7 @@ namespace SmartPlaylist.Services
         }
 
 
-        public int GetItemsCount(User user, string[] itemTypes)
+        private int GetItemsCount(User user, string[] itemTypes)
         {
             var query = new InternalItemsQuery(user)
             {

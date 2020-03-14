@@ -16,6 +16,8 @@ using SmartPlaylist.Handlers.CommandHandlers;
 using SmartPlaylist.Infrastructure.MesssageBus;
 using SmartPlaylist.Infrastructure.MesssageBus.Decorators;
 using SmartPlaylist.Infrastructure.MesssageBus.Decorators.DebugDecorators;
+using SmartPlaylist.PerfLoggerDecorators;
+using SmartPlaylist.PerfLoggerDecorators.Services;
 using SmartPlaylist.Services;
 using SmartPlaylist.Services.SmartPlaylist;
 
@@ -38,13 +40,15 @@ namespace SmartPlaylist
             Instance = this;
             var smartPlaylistFileSystem =
                 new EnsureBaseDirSmartPlaylistFileSystemDecorator(new SmartPlaylistFileSystem(serverApplicationPaths));
-            var smartPlaylistStore =
-                new CacheableSmartPlaylistStore(
-                    new CleanupOldCriteriaDecorator(new SmartPlaylistStore(jsonSerializer, smartPlaylistFileSystem)));
-            var userItemsProvider = new UserItemsProvider(libraryManager);
-            var smartPlaylistProvider = new SmartPlaylistProvider(smartPlaylistStore);
-            var playlistRepository = new PlaylistRepository(userManager, libraryManager);
-            var playlistItemsUpdater = new PlaylistItemsUpdater(playlistManager);
+            var smartPlaylistStore = new SmartPlaylistStorePerfLoggerDecorator(new CacheableSmartPlaylistStore(
+                new CleanupOldCriteriaDecorator(new SmartPlaylistStore(jsonSerializer, smartPlaylistFileSystem))));
+            var userItemsProvider = new UserItemsProviderPerfLoggerDecorator(new UserItemsProvider(libraryManager));
+            var smartPlaylistProvider =
+                new SmartPlaylistProviderPerfLoggerDecorator(new SmartPlaylistProvider(smartPlaylistStore));
+            var playlistRepository =
+                new PlaylistRepositoryPerfLoggerDecorator(new PlaylistRepository(userManager, libraryManager));
+            var playlistItemsUpdater =
+                new PlaylistItemsUpdaterPerfLoggerDecorator(new PlaylistItemsUpdater(playlistManager));
 
             MessageBus = new MessageBus();
 
@@ -53,6 +57,8 @@ namespace SmartPlaylist
 
             SmartPlaylistStore = smartPlaylistStore;
             SmartPlaylistValidator = new SmartPlaylistValidator();
+
+            Logger.Instance = new Logger(logger);
         }
 
         public SmartPlaylistValidator SmartPlaylistValidator { get; }
@@ -99,9 +105,9 @@ namespace SmartPlaylist
             };
         }
 
-        private void SubscribeMessageHandlers(SmartPlaylistProvider smartPlaylistProvider,
-            UserItemsProvider userItemsProvider, PlaylistRepository playlistRepository,
-            PlaylistItemsUpdater playlistItemsUpdater, ISmartPlaylistStore smartPlaylistStore)
+        private void SubscribeMessageHandlers(ISmartPlaylistProvider smartPlaylistProvider,
+            IUserItemsProvider userItemsProvider, IPlaylistRepository playlistRepository,
+            IPlaylistItemsUpdater playlistItemsUpdater, ISmartPlaylistStore smartPlaylistStore)
         {
             var updateSmartPlaylistCommandHandler =
                 new UpdateSmartPlaylistCommandHandler(userItemsProvider, smartPlaylistProvider,
@@ -124,10 +130,11 @@ namespace SmartPlaylist
 #if DEBUG
             return new SuppressAsyncExceptionDecorator<T>(
                 new DebugShowErrorMessageDecorator<T>(
-                    new DebugShowDurationMessageDecorator<T>(messageHandler, _sessionManager), _sessionManager),
+                    new DebugShowDurationMessageDecorator<T>(new PerLoggerMessageDecorator<T>(messageHandler),
+                        _sessionManager), _sessionManager),
                 _logger);
 #else
-            return new SuppressAsyncExceptionDecorator<T>(messageHandler, _logger);
+            return new SuppressAsyncExceptionDecorator<T>(new PerLoggerMessageDecorator<T>(messageHandler), _logger);
 
 #endif
         }
