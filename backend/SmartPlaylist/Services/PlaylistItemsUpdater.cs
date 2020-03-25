@@ -7,7 +7,12 @@ using SmartPlaylist.Domain;
 
 namespace SmartPlaylist.Services
 {
-    public class PlaylistItemsUpdater
+    public interface IPlaylistItemsUpdater
+    {
+        Task UpdateAsync(UserPlaylist playlist, BaseItem[] newItems);
+    }
+
+    public class PlaylistItemsUpdater : IPlaylistItemsUpdater
     {
         private readonly IPlaylistManager _playlistManager;
 

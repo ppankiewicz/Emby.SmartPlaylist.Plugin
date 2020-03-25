@@ -5,7 +5,13 @@ using SmartPlaylist.Adapters;
 
 namespace SmartPlaylist.Services.SmartPlaylist
 {
-    public class SmartPlaylistProvider
+    public interface ISmartPlaylistProvider
+    {
+        Task<Domain.SmartPlaylist[]> GetAllUpdateableSmartPlaylistsAsync();
+        Task<Domain.SmartPlaylist> GetSmartPlaylistAsync(Guid smartPlaylistId);
+    }
+
+    public class SmartPlaylistProvider : ISmartPlaylistProvider
     {
         private readonly ISmartPlaylistStore _smartPlaylistStore;
 

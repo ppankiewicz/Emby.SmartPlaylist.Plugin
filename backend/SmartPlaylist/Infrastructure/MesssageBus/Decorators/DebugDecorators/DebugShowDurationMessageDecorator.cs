@@ -25,7 +25,7 @@ namespace SmartPlaylist.Infrastructure.MesssageBus.Decorators.DebugDecorators
 
             sw.Stop();
 
-            await _debugMessageManager.ShowAsync($"{message.GetType().Name}:Duration: {FormatElapsedTime(sw)}")
+            await _debugMessageManager.ShowAsync($"{message.GetType().Name}:ActionDuration: {FormatElapsedTime(sw)}")
                 .ConfigureAwait(false);
         }
 

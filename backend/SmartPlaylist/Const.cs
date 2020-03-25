@@ -10,14 +10,6 @@ namespace SmartPlaylist
 {
     public static class Const
     {
-#if DEBUG
-        public const int MaxGetUserItemsCount = 100;
-#else
-        public const int MaxGetUserItemsCount = 10000;
-#endif
-        public const int ForEachMaxDegreeOfParallelism = 3;
-
-
         public static readonly Type[] SupportedItemTypes =
             {typeof(Audio), typeof(Movie), typeof(Episode)};
 
@@ -44,7 +36,8 @@ namespace SmartPlaylist
         };
 
 
-        public static readonly TaskTriggerInfo[] RefreshAllSmartPlaylistsTaskTriggers = {
+        public static readonly TaskTriggerInfo[] RefreshAllSmartPlaylistsTaskTriggers =
+        {
             new TaskTriggerInfo
                 {Type = TaskTriggerInfo.TriggerDaily, TimeOfDayTicks = TimeSpan.FromHours(1).Ticks}
         };

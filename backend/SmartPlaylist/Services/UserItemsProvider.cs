@@ -1,15 +1,16 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using MediaBrowser.Controller.Dto;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
 
 namespace SmartPlaylist.Services
 {
-    public class UserItemsProvider
+    public interface IUserItemsProvider
+    {
+        IEnumerable<BaseItem> GetItems(User user, string[] itemTypes);
+    }
+
+    public class UserItemsProvider : IUserItemsProvider
     {
         private readonly ILibraryManager _libraryManager;
 
@@ -18,54 +19,24 @@ namespace SmartPlaylist.Services
             _libraryManager = libraryManager;
         }
 
-        public IEnumerable<BaseItem> GetItems(User user, string[] mediaTypes)
+        public IEnumerable<BaseItem> GetItems(User user, string[] itemTypes)
         {
-            var items = new ConcurrentBag<(int, IEnumerable<BaseItem>)>();
-            var count = GetItemsCount(user, mediaTypes);
-            var partsCount = (int) Math.Ceiling((decimal) count / Const.MaxGetUserItemsCount);
-            Parallel.ForEach(Enumerable.Range(0, partsCount), new ParallelOptions
-            {
-                MaxDegreeOfParallelism = Const.ForEachMaxDegreeOfParallelism
-            }, x =>
-            {
-                var startIndex = x * Const.MaxGetUserItemsCount;
-                var partItems = GetItems(user, mediaTypes, Const.MaxGetUserItemsCount, startIndex);
-                items.Add((x, partItems));
-            });
-
-            return items.OrderBy(x => x.Item1).SelectMany(x => x.Item2);
+            var query = GetItemsQuery(user, itemTypes);
+            return _libraryManager.GetUserRootFolder().GetItems(query).Items;
         }
 
-        public BaseItem[] GetItems(User user, string[] mediaTypes, int? limit = null, int? startIndex = null)
+        private static InternalItemsQuery GetItemsQuery(User user, string[] itemTypes)
         {
-            var items = _libraryManager.GetUserRootFolder().GetItems(new InternalItemsQuery(user)
-            {
-                Recursive = true,
-                Limit = limit,
-                StartIndex = startIndex,
-                IncludeItemTypes = mediaTypes
-            });
-
-            return items.Items;
-        }
-
-
-        public int GetItemsCount(User user, string[] itemTypes)
-        {
-            var query = new InternalItemsQuery(user)
+            return new InternalItemsQuery(user)
             {
                 IncludeItemTypes = itemTypes,
-                Limit = 0,
                 Recursive = true,
                 IsVirtualItem = false,
-                DtoOptions = new DtoOptions(false)
+                DtoOptions = new DtoOptions(true)
                 {
                     EnableImages = false
                 }
             };
-
-            var result = _libraryManager.GetItemsResult(query);
-            return result.TotalRecordCount;
         }
     }
 }

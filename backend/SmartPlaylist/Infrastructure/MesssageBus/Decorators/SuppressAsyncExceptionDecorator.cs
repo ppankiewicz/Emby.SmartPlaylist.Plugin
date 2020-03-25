@@ -23,7 +23,7 @@ namespace SmartPlaylist.Infrastructure.MesssageBus.Decorators
             }
             catch (Exception e)
             {
-                _logger.ErrorException(e.Message, e);
+                _logger.ErrorException($"[SmartPlaylist][Error]: {e.Message}", e);
             }
         }
     }

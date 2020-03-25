@@ -7,7 +7,12 @@ using SmartPlaylist.Domain;
 
 namespace SmartPlaylist.Services
 {
-    public class PlaylistRepository
+    public interface IPlaylistRepository
+    {
+        UserPlaylist GetUserPlaylist(Guid userId, string playlistName);
+    }
+
+    public class PlaylistRepository : IPlaylistRepository
     {
         private readonly ILibraryManager _libraryManager;
         private readonly IUserManager _userManager;
