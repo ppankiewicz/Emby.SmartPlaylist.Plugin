@@ -11,6 +11,7 @@ namespace SmartPlaylist.Services.SmartPlaylist
         private readonly ISmartPlaylistStore _decorated;
         private readonly MemCache _memCache;
 
+
         public CacheableSmartPlaylistStore(ISmartPlaylistStore decorated)
         {
             _decorated = decorated;
@@ -52,10 +53,15 @@ namespace SmartPlaylist.Services.SmartPlaylist
                 {
                     return (await _decorated.GetAllSmartPlaylistsAsync()
                             .ConfigureAwait(false))
-                        .ToDictionary(x => (object) x.Id, y => (object) y);
+                        .ToDictionary(x => (object)x.Id, y => (object)y);
                 }, Const.GetAllSmartPlaylistsCacheExpiration).ConfigureAwait(false))
                 .OfType<SmartPlaylistDto>()
                 .ToArray();
+        }
+
+        public bool Exists(Guid userId, string smartPlaylistId)
+        {
+            return _decorated.Exists(userId, smartPlaylistId);
         }
     }
 }

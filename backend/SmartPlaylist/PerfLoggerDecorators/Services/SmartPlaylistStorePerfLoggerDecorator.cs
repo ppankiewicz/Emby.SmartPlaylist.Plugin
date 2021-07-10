@@ -18,7 +18,7 @@ namespace SmartPlaylist.PerfLoggerDecorators.Services
         public async Task<SmartPlaylistDto> GetSmartPlaylistAsync(Guid smartPlaylistId)
         {
             SmartPlaylistDto smartPlaylistDto = null;
-            using (PerfLogger.Create("GetSmartPlaylistFromStore", () => new {smartPlaylistName = smartPlaylistDto?.Name}))
+            using (PerfLogger.Create("GetSmartPlaylistFromStore", () => new { smartPlaylistName = smartPlaylistDto?.Name }))
             {
                 smartPlaylistDto = await _decorated.GetSmartPlaylistAsync(smartPlaylistId).ConfigureAwait(false);
                 return smartPlaylistDto;
@@ -43,7 +43,7 @@ namespace SmartPlaylist.PerfLoggerDecorators.Services
 
         public void Save(SmartPlaylistDto smartPlaylist)
         {
-            using (PerfLogger.Create("SaveSmartPlaylist", () => new {smartPlaylistName = smartPlaylist.Name}))
+            using (PerfLogger.Create("SaveSmartPlaylist", () => new { smartPlaylistName = smartPlaylist.Name }))
             {
                 _decorated.Save(smartPlaylist);
             }
@@ -55,6 +55,11 @@ namespace SmartPlaylist.PerfLoggerDecorators.Services
             {
                 _decorated.Delete(userId, smartPlaylistId);
             }
+        }
+
+        public bool Exists(Guid userId, string smartPlaylistId)
+        {
+            return _decorated.Exists(userId, smartPlaylistId);
         }
     }
 }

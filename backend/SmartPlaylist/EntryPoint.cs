@@ -73,7 +73,7 @@ namespace SmartPlaylist
                     e.Item.PlayCount = e.UserData.PlayCount;
                     e.Item.LastPlayedDate = e.UserData.LastPlayedDate;
                     e.Item.Played = e.UserData.Played;
-                    e.Item.Rating = e.UserData.Rating;
+                    e.Item.OfficialRating = e.UserData.Rating?.ToString() ?? "None";
                     _updatedItemsQueue.Enqueue(e.Item);
                 }
         }

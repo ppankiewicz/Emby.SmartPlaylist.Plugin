@@ -67,5 +67,10 @@ namespace SmartPlaylist.Services.SmartPlaylist
                 return res;
             }
         }
+
+        public bool Exists(Guid userId, string smartPlaylistId)
+        {
+            return _fileSystem.PlaylistFileExists(userId, smartPlaylistId);
+        }
     }
 }

@@ -41,17 +41,18 @@ namespace SmartPlaylist.Handlers.CommandHandlers
 
             BaseItem[] newItems;
             using (PerfLogger.Create("FilterPlaylistItems",
-                () => new {playlistName = playlist.Name, itemsCount = items.Length}))
+                () => new { playlistName = playlist.Name, itemsCount = items.Length }))
             {
                 newItems = smartPlaylist.FilterPlaylistItems(playlist, items).ToArray();
             }
 
             await _playlistItemsUpdater.UpdateAsync(playlist, newItems).ConfigureAwait(false);
+            var smDto = smartPlaylist.ToDto();
 
-            if (smartPlaylist.IsShuffleUpdateType)
+            if (!_smartPlaylistStore.Exists(smDto.UserId, smDto.Id) || smartPlaylist.IsShuffleUpdateType)
             {
                 smartPlaylist.UpdateLastShuffleTime();
-                _smartPlaylistStore.Save(smartPlaylist.ToDto());
+                _smartPlaylistStore.Save(smDto);
             }
         }
     }

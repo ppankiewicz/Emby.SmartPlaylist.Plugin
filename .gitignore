@@ -1,1 +1,3 @@
 pack
+node_modules/
+*.lock
