@@ -39,7 +39,7 @@ export const App: React.FC<AppProps> = props => {
     return (
         <>
             <AppContext.Provider value={appContext}>
-                <Button onClick={() => addNewPlaylist()}>Add new samrtplaylist</Button>
+                <Button onClick={() => addNewPlaylist()}>Add new Smart Play List</Button>
                 <PlaylistList />
 
                 {editedPlaylist && (
