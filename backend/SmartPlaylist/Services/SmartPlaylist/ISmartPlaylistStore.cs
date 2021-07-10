@@ -11,5 +11,7 @@ namespace SmartPlaylist.Services.SmartPlaylist
         Task<SmartPlaylistDto[]> GetAllSmartPlaylistsAsync();
         void Save(SmartPlaylistDto smartPlaylist);
         void Delete(Guid userId, string smartPlaylistId);
+
+        bool Exists(Guid userId, string smartPlaylistId);
     }
 }

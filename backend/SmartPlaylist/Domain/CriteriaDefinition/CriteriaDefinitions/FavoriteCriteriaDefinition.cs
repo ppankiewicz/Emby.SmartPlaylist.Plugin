@@ -13,7 +13,7 @@ namespace SmartPlaylist.Domain.CriteriaDefinition.CriteriaDefinitions
 
         public override Value[] Values
         {
-            get { return new Value[] {FavoriteListValue, LikedListValue, NoneListValue}; }
+            get { return new Value[] { FavoriteListValue, LikedListValue, NoneListValue }; }
         }
 
         public override Value GetValue(UserItem item)
@@ -21,8 +21,6 @@ namespace SmartPlaylist.Domain.CriteriaDefinition.CriteriaDefinitions
             if (item.TryGetUserItemData(out var userData))
             {
                 if (userData.IsFavorite) return FavoriteListValue;
-
-                if (userData.Likes.GetValueOrDefault()) return LikedListValue;
             }
 
             return NoneListValue;

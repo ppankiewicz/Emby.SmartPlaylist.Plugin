@@ -120,5 +120,10 @@ namespace SmartPlaylist.Services.SmartPlaylist
         {
             return currentValue is ListValue listValue && availableValues.Any() && !availableValues.Contains(listValue);
         }
+
+        public bool Exists(Guid userId, string smartPlaylistId)
+        {
+            return _decorated.Exists(userId, smartPlaylistId);
+        }
     }
 }
